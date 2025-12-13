@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Chess Mate Puzzles - 10 Levels</title>
+<style>
+  body { margin:0; background:#0d0d1f; color:#0ff; font-family:Arial; text-align:center; overflow:hidden; display:flex; flex-direction:column; min-height:100vh; }
+  h1 { font-size:50px; text-shadow:0 0 30px #0ff; margin:15px 0; }
+  #menu, #pause, #win { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,30,0.98); display:flex; flex-direction:column; justify-content:center; align-items:center; z-index:100; }
+  button { padding:16px 45px; margin:12px; font-size:26px; background:#0ff; color:#000; border:none; border-radius:12px; cursor:pointer; }
+  button:hover { background:#0cc; transform:scale(1.05); }
+  #game { flex:1; display:flex; flex-direction:column; justify-content:center; padding:10px; }
+  #info { display:flex; justify-content:center; gap:20px; margin:10px; flex-wrap:wrap; }
+  #score, #lives, #level, #timer { font-size:24px; padding:8px 18px; background:rgba(0,255,255,0.2); border-radius:10px; }
+  #message { font-size:32px; margin:10px; min-height:50px; }
+  #board-container { display:flex; justify-content:center; margin:10px 0; }
+  #board { 
+    width:90vmin; height:90vmin; max-width:480px; max-height:480px;
+    border:10px solid #0ff; box-shadow:0 0 70px #0ff; background:#222; 
+    display:grid; grid-template-columns:repeat(8,1fr); border-radius:8px;
+  }
+  .square { width:100%; height:100%; position:relative; cursor:pointer; }
+  .light { background:#f0d9b5; }
+  .dark { background:#b58863; }
+  .piece { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:50px; user-select:none; cursor:grab; }
+  .piece.white {color: white; text-shadow: 0 0 25px rgb(3, 196, 255), 0 0 50px rgb(0, 225, 255); }
+  .piece.black {color: #000; text-shadow: 0 0 20px #f00, 0 0 40px #800; }
+  .piece:active { cursor:grabbing; }
+  .highlight { box-shadow:inset 0 0 0 5px #ff0 !important; }
+  .valid { box-shadow:inset 0 0 0 5px #0f0 !important; }
+
+  #mateOverlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.97);
+    z-index: 90;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    color: #0ff;
+    font-size: 70px;
+    text-shadow: 0 0 40px #0ff;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+<div id="menu">
+  <h1>CHESS MATE<br>PUZZLES</h1>
+  <p>10 Levels • Mate in 1</p>
+  <button onclick="startGame()">START GAME</button>
+</div>
+
+<div id="pause" style="display:none">
+  <h1>PAUSED</h1>
+  <button onclick="resume()">RESUME</button>
+  <button onclick="location.reload()">MENU</button>
+</div>
+
+<div id="win" style="display:none">
+  <h1 id="winTitle">GENIUS!</h1>
+  <div id="finalScore" style="font-size:60px; margin:30px;"></div>
+  <button onclick="location.reload()">PLAY AGAIN</button>
+</div>
+
+<div id="mateOverlay">
+  <div>CHECKMATE!</div>
+  <div style="font-size:100px; margin-top:20px;">GENIUS!</div>
+</div>
+
+<div id="game" style="display:none">
+  <h1>CHESS MATE PUZZLES</h1>
+  <div id="info">
+    <div id="score">Score: 0</div>
+    <div id="lives">Lives: 3</div>
+    <div id="level">Level 1/10</div>
+    <div id="timer">Time: 30</div>
+  </div>
+  <div id="message">Find the checkmate in 1 move!</div>
+  <div id="board-container"><div id="board"></div></div>
+</div>
+
+<script>
+// REAL CHESS SYMBOLS
+const pieces = {
+  'K':'♔','Q':'♕','R':'♖','B':'♗','N':'♘','P':'♙',
+  'k':'♚','q':'♛','r':'♜','b':'♝','n':'♞','p':'♟'
+};
+
+const puzzles = [
+  "2kr2nr/p2n1ppp/2p1p3/8/1P1P1B2/2NB3P/1PPK1PP1/7q w KQkq - 0 1|Ba6",
+  "3r1r2/4k3/R7/8/2Q5/8/8/6K1 w KQkq - 0 1|Qe6",
+  "6k1/5p1p/5PpQ/8/8/8/8/6K1 w KQkq - 0 1|Qg7",
+  "5k2/2R5/4PN2/8/8/8/8/6K1 w KQkq - 0 0 1|Rf7",
+  "8/5KBk/8/8/8/8/6B1/8 w KQkq - 0 1|Be4",
+  "7k/6p1/8/8/2B5/8/8/2KR4 w KQkq - 0 1|Rh1",
+  "2k1q/2BRP3/2K1B3/8/8/8/8/8 w KQkq - 0 1|Rd8",
+  "3rkr2/8/8/8/8/8/Q7/4K3 w KQkq - 0 1|Qe6",
+  "8/6p1/6k1/7R/8/5Q2/8/7K1 w KQkq - 0 1|Qf5",
+  "4k3/8/5Q2/8/8/5B2/8/6K1 w KQkq - 0 1|Bc6"
+];
+
+let board = [], selected = null, score = 0, lives = 3, level = 1, timeLeft = 30, timer;
+let currentSolution = "";
+
+function startGame() {
+  document.getElementById('menu').style.display = 'none';
+  document.getElementById('game').style.display = 'flex';
+  document.getElementById('mateOverlay').style.display = 'none';
+  loadLevel(1);
+}
+
+function loadLevel(n) {
+  level = n;
+  document.getElementById('level').textContent = `Level ${level}/10`;
+  timeLeft = 30;
+  document.getElementById('timer').textContent = 'Time: 30';
+  clearInterval(timer);
+  timer = setInterval(() => {
+    timeLeft--;
+    document.getElementById('timer').textContent = 'Time: ' + timeLeft;
+    if (timeLeft <= 0) loseLife();
+  }, 1000);
+
+  const [fen, solution] = puzzles[level - 1].split('|');
+  currentSolution = solution;
+
+  board = Array(8).fill().map(()=>Array(8).fill(null));
+  const rows = fen.split(' ')[0].split('/');
+  for (let r = 0; r < 8; r++) {
+    let c = 0;
+    for (let ch of rows[r]) {
+      if (!isNaN(ch)) c += parseInt(ch);
+      else { board[r][c] = ch; c++; }
+    }
+  }
+  renderBoard();
+  document.getElementById('message').textContent = 'Find the checkmate in 1 move!';
+}
+
+function renderBoard() {
+  const b = document.getElementById('board');
+  b.innerHTML = '';
+  for (let r = 0; r < 8; r++) {
+    for (let c = 0; c < 8; c++) {
+      const sq = document.createElement('div');
+      sq.className = `square ${(r+c)%2 === 0 ? 'light' : 'dark'}`;
+      sq.dataset.r = r; sq.dataset.c = c;
+      sq.onclick = () => clickSquare(r, c);
+      if (board[r][c]) {
+        const p = document.createElement('div');
+        p.className = `piece ${board[r][c] === board[r][c].toUpperCase() ? 'white' : 'black'}`;
+        p.textContent = pieces[board[r][c]];
+        sq.appendChild(p);
+      }
+      b.appendChild(sq);
+    }
+  }
+}
+
+function clickSquare(r, c) {
+  if (!selected) {
+    if (board[r][c] && board[r][c] === board[r][c].toUpperCase()) {
+      selected = {r, c};
+      document.querySelectorAll('.square').forEach(s => s.classList.remove('highlight'));
+      document.querySelector(`[data-r="${r}"][data-c="${c}"]`).classList.add('highlight');
+      showLegalMoves(r, c);
+    }
+  } else {
+    const from = selected;
+    if (from.r === r && from.c === c) {
+      selected = null;
+      clearHighlights();
+      return;
+    }
+    if (isLegalMove(from.r, from.c, r, c)) {
+      const piece = board[from.r][from.c];
+      const move = piece + String.fromCharCode(97 + c) + (8 - r);
+      if (currentSolution.includes(move.slice(-2)) || currentSolution === move) {
+        winLevel();
+      } else {
+        loseLife();
+      }
+    }
+    selected = null;
+    clearHighlights();
+  }
+}
+
+function isLegalMove(fr, fc, tr, tc) {
+  const piece = board[fr][fc];
+  if (!piece || piece !== piece.toUpperCase()) return false;
+  const target = board[tr][tc];
+  if (target && target === target.toUpperCase()) return false;
+  const dr = tr - fr, dc = tc - fc;
+  switch (piece) {
+    case 'P': return tr === fr-1 && (fc === tc || (Math.abs(dc) === 1 && target));
+    case 'N': return (Math.abs(dr)*Math.abs(dc) === 2 && dr !== 0 && dc !== 0);
+    case 'B': return Math.abs(dr) === Math.abs(dc) && isPathClear(fr, fc, tr, tc);
+    case 'R': return (dr === 0 || dc === 0) && isPathClear(fr, fc, tr, tc);
+    case 'Q': return (Math.abs(dr) === Math.abs(dc) || dr === 0 || dc === 0) && isPathClear(fr, fc, tr, tc);
+    case 'K': return Math.max(Math.abs(dr), Math.abs(dc)) === 1;
+  }
+  return false;
+}
+
+function isPathClear(fr, fc, tr, tc) {
+  const dr = tr > fr ? 1 : tr < fr ? -1 : 0;
+  const dc = tc > fc ? 1 : tc < fc ? -1 : 0;
+  let r = fr + dr, c = fc + dc;
+  while (r !== tr || c !== tc) {
+    if (board[r][c]) return false;
+    r += dr; c += dc;
+  }
+  return true;
+}
+
+function showLegalMoves(r, c) {
+  for (let tr = 0; tr < 8; tr++) {
+    for (let tc = 0; tc < 8; tc++) {
+      if (isLegalMove(r, c, tr, tc)) {
+        document.querySelector(`[data-r="${tr}"][data-c="${tc}"]`).classList.add('valid');
+      }
+    }
+  }
+}
+
+function clearHighlights() {
+  document.querySelectorAll('.highlight, .valid').forEach(s => s.classList.remove('highlight', 'valid'));
+}
+
+function winLevel() {
+  clearInterval(timer);
+  score += 100 + timeLeft * 3;
+  document.getElementById('score').textContent = 'Score: ' + score;
+
+  document.getElementById('mateOverlay').style.display = 'flex';
+
+  setTimeout(() => {
+    document.getElementById('mateOverlay').style.display = 'none';
+    if (level === 10) winGame();
+    else loadLevel(level + 1);
+  }, 2300);
+}
+
+function loseLife() {
+  lives--;
+  document.getElementById('lives').textContent = 'Lives: ' + lives;
+  document.getElementById('message').textContent = 'Wrong move! Try again!';
+  if (lives <= 0) gameOver();
+}
+
+function gameOver() {
+  clearInterval(timer);
+  document.getElementById('winTitle').textContent = 'GAME OVER';
+  document.getElementById('finalScore').textContent = 'Score: ' + score;
+  document.getElementById('win').style.display = 'flex';
+}
+
+function winGame() {
+  clearInterval(timer);
+  const rank = score >= 1500 ? "CHESS GOD!" : score >= 1200 ? "GENIUS!" : score >= 900 ? "EXCELLENT!" : "GREAT JOB!";
+  document.getElementById('winTitle').textContent = rank;
+  document.getElementById('finalScore').textContent = 'Score: ' + score;
+  document.getElementById('win').style.display = 'flex';
+}
+
+// ESC pause
+let paused = false;
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && document.getElementById('game').style.display !== 'none') {
+    if (paused) {
+      document.getElementById('pause').style.display = 'none';
+      timer = setInterval(() => { timeLeft--; document.getElementById('timer').textContent = 'Time: ' + timeLeft; if(timeLeft<=0) loseLife(); }, 1000);
+      paused = false;
+    } else {
+      clearInterval(timer);
+      document.getElementById('pause').style.display = 'flex';
+      paused = true;
+    }
+  }
+});
+
+// THIS MAKES SURE THE OVERLAY NEVER SHOWS AT START
+window.addEventListener('load', () => {
+  document.getElementById('mateOverlay').style.display = 'none';
+});
+</script>
+</body>
+</html>

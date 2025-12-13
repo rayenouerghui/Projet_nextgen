@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Snake Levels Game</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="info">
+    <h1 style="font-size: 20px; position: fixed; top: 60px; left: 410px;">🐍 Snake Levels</h1>
+    <span id="score">Total: 0</span>
+    <span id="level">Level: 1</span>
+    <span id="remaining">Remaining: 20</span>
+  </div>
+  <div id="game-container">
+    <canvas id="game" width="600" height="600"></canvas>
+    <div id="menu">
+      <h1>🐍 Snake Levels</h1>
+      <button id="start-game">Start New Game</button>
+      <div id="high-score">High Score: 0</div>
+      <button id="continue-game" style="display:none;">Continue</button>
+      <button id="new-game" style="display:none;">New Game</button>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

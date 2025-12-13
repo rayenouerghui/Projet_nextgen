@@ -1,0 +1,46 @@
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- Shadow -->
+  <ellipse cx="32" cy="60" rx="24" ry="4" fill="rgba(0,0,0,0.2)"/>
+  
+  <!-- Truck body gradient -->
+  <defs>
+    <linearGradient id="truckGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="truckLight" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#a78bfa;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Cargo container -->
+  <path d="M 8 28 L 8 42 L 38 42 L 38 28 Z" fill="url(#truckGrad)" stroke="#5b21b6" stroke-width="1.5"/>
+  <rect x="8" y="28" width="30" height="3" fill="url(#truckLight)" opacity="0.6"/>
+  
+  <!-- Cabin -->
+  <path d="M 38 32 L 38 42 L 48 42 L 52 38 L 52 32 Z" fill="url(#truckGrad)" stroke="#5b21b6" stroke-width="1.5"/>
+  
+  <!-- Windows -->
+  <path d="M 40 34 L 50 34 L 49 36 L 40 36 Z" fill="rgba(255,255,255,0.9)" stroke="#5b21b6" stroke-width="0.8"/>
+  
+  <!-- Wheels -->
+  <g>
+    <circle cx="16" cy="44" r="6" fill="#1e293b" stroke="#0f172a" stroke-width="1.5"/>
+    <circle cx="16" cy="44" r="3" fill="#64748b"/>
+    <circle cx="16" cy="44" r="1.5" fill="#cbd5e1"/>
+    
+    <circle cx="44" cy="44" r="6" fill="#1e293b" stroke="#0f172a" stroke-width="1.5"/>
+    <circle cx="44" cy="44" r="3" fill="#64748b"/>
+    <circle cx="44" cy="44" r="1.5" fill="#cbd5e1"/>
+  </g>
+  
+  <!-- Headlights -->
+  <circle cx="51" cy="36" r="1.5" fill="#fbbf24"/>
+  
+  <!-- Details/lines -->
+  <line x1="24" y1="28" x2="24" y2="42" stroke="#5b21b6" stroke-width="0.5" opacity="0.5"/>
+  
+  <!-- Shine effect -->
+  <path d="M 10 29 L 12 29 L 12 40 L 10 40 Z" fill="rgba(255,255,255,0.2)"/>
+</svg>

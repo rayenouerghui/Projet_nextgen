@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PONG</title>
+<style>
+  html, body {
+    margin: 0; padding: 0; height: 100%; background: linear-gradient(135deg, #1a0033, #2d1b69); overflow: hidden;
+    font-family: 'Courier New', monospace;
+  }
+  body { display: flex; flex-direction: column; align-items: center; padding: 20px 10px; box-sizing: border-box; }
+  #score {
+    color: #0f0; font-size: 32px; font-weight: bold; text-shadow: 0 0 15px #0f0;
+    margin-bottom: 10px; z-index: 10;
+  }
+  canvas {
+    border: 5px solid #fff; box-shadow: 0 0 40px #0f0;background: black;
+    width: 95vw; max-width: 700px; height: 88vh; max-height: 950px;
+  }
+  #menu, #gameOver {
+    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.95); color: #fff; padding: 60px; border-radius: 30px;
+    border: 5px solid #0ff; box-shadow: 0 0 60px #0ff; text-align: center; z-index: 100;
+  }
+  #menu h1 { font-size: 130px; color: #0ff; text-shadow: 0 0 50px #0ff; margin: 0 0 30px; }
+  #menu p { font-size: 40px; color: #0f0; text-shadow: 0 0 20px #0f0; margin: 20px 0; }
+  #gameOver { border-color: #f00; box-shadow: 0 0 60px #f00; }
+  #gameOver h2 { font-size: 90px; color: #f00; text-shadow: 0 0 40px #f00; margin: 0 0 40px; }
+  button {
+    padding: 18px 50px; font-size: 32px; background: #0f0; border: none; border-radius: 15px;
+    cursor: pointer; box-shadow: 0 0 25px #0f0; color: #000; font-weight: bold; margin: 15px;
+  }
+  button:hover { background: #0ff; box-shadow: 0 0 40px #0ff; }
+</style>
+</head>
+<body>
+
+<div id="score">Score: 0   |   Speed Level: 1</div>
+<canvas id="gameCanvas"></canvas>
+
+<div id="menu">
+  <h1>PONG</h1>
+  <p>High Score: <span id="menuHighScore">0</span></p>
+  <button onclick="newGame()">New Game</button><br>
+  <button id="continueBtn" onclick="resumeGame()">Continue</button>
+  <p style="font-size:24px; margin-top:40px; color:#888;">
+    Press ESC anytime to pause / resume
+  </p>
+</div>
+
+<div id="gameOver">
+  <h2>GAME OVER</h2>
+  <p>Your Score: <span id="finalScore">0</span></p>
+  <button onclick="newGame()">New Game</button>
+</div>
+
+<script>
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+const scoreDisplay = document.getElementById('score');
+const menu = document.getElementById('menu');
+const gameOver = document.getElementById('gameOver');
+const menuHighScore = document.getElementById('menuHighScore');
+const finalScoreDisplay = document.getElementById('finalScore');
+const continueBtn = document.getElementById('continueBtn');
+
+const PADDLE_HEIGHT = 20;
+const BALL_RADIUS = 12;
+const INITIAL_SPEED = 7;
+
+const STORAGE_HIGH = 'pongHighScore';
+const STORAGE_SAVE = 'pongSavedGame';
+
+let highScore = parseInt(localStorage.getItem(STORAGE_HIGH)) || 0;
+let savedGame = localStorage.getItem(STORAGE_SAVE) ? JSON.parse(localStorage.getItem(STORAGE_SAVE)) : null;
+
+let hits = 0;
+let speedLevel = 1;
+let ball = { x: 0, y: 0, dx: 0, dy: 0, radius: BALL_RADIUS };
+let paddle = { x: 0, y: 0, width: 0, height: PADDLE_HEIGHT };
+let isPaused = false;           // true = menu shown (paused)
+let hasActiveGame = false;      // true after first game start
+
+menuHighScore.textContent = highScore;
+continueBtn.style.display = savedGame ? 'inline-block' : 'none';
+
+function resizeCanvas() {
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = canvas.clientWidth * dpr;
+  canvas.height = canvas.clientHeight * dpr;
+  ctx.scale(dpr, dpr);
+
+  paddle.width = canvas.clientWidth * 0.25;
+  paddle.y = canvas.clientHeight - 70;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+function updateScore() {
+  scoreDisplay.textContent = `Score: ${hits * 10}   |   Speed Level: ${speedLevel}`;
+}
+
+function draw() {
+  ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+  // ball
+  ctx.beginPath();
+  ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2);
+  ctx.fillStyle = '#0ff';
+  ctx.shadowBlur = 30; ctx.shadowColor = '#0ff';
+  ctx.fill(); ctx.shadowBlur = 0;
+  // paddle
+  ctx.fillStyle = '#0f0';
+  ctx.shadowBlur = 35; ctx.shadowColor = '#0f0';
+  ctx.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
+  ctx.shadowBlur = 0;
+}
+
+function updateBall() {
+  ball.x += ball.dx;
+  ball.y += ball.dy;
+
+  if (ball.y - ball.radius < 0) ball.dy = -ball.dy;
+  if (ball.x - ball.radius < 0 || ball.x + ball.radius > canvas.clientWidth) ball.dx = -ball.dx;
+
+  // paddle hit
+  if (ball.y + ball.radius > paddle.y &&
+      ball.x > paddle.x && ball.x < paddle.x + paddle.width &&
+      ball.y - ball.radius < paddle.y + paddle.height) {
+
+    ball.dy = -Math.abs(ball.dy);
+    hits++;
+    if (hits % 7 === 0) {
+      speedLevel++;
+      ball.dx *= 1.25;
+      ball.dy *= 1.25;
+    }
+    const hitPos = (ball.x - paddle.x) / paddle.width;
+    ball.dx = 14 * (hitPos - 0.5) * speedLevel;
+    updateScore();
+  }
+
+  // lose
+  if (ball.y - ball.radius > canvas.clientHeight) {
+    const score = hits * 10;
+    if (score > highScore) {
+      highScore = score;
+      localStorage.setItem(STORAGE_HIGH, highScore);
+      menuHighScore.textContent = highScore;
+    }
+    finalScoreDisplay.textContent = score;
+    localStorage.removeItem(STORAGE_SAVE);
+    savedGame = null;
+    continueBtn.style.display = 'none';
+    gameOver.style.display = 'block';
+    scoreDisplay.style.display = 'none';
+    isPaused = true;
+    hasActiveGame = false;
+  }
+}
+
+function movePaddle(e) {
+  if (isPaused) return;
+  let clientX = e.clientX || (e.touches && e.touches[0].clientX);
+  if (!clientX) return;
+  const rect = canvas.getBoundingClientRect();
+  const x = clientX - rect.left;
+  paddle.x = Math.max(0, Math.min(canvas.clientWidth - paddle.width, x - paddle.width / 2));
+}
+document.addEventListener('mousemove', movePaddle);
+document.addEventListener('touchmove', e => { e.preventDefault(); movePaddle(e); }, { passive: false });
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' || e.key === 'Esc') {
+    if (!hasActiveGame) return;           // no game started yet
+    if (gameOver.style.display === 'block') return;
+
+    if (isPaused) {
+      resumeGame();                       // ESC again → back to game
+    } else {
+      pauseAndShowMenu();                 // ESC → pause & menu
+    }
+  }
+});
+
+function saveCurrentState() {
+  const state = {
+    hits, speedLevel,
+    ball: { x: ball.x, y: ball.y, dx: ball.dx, dy: ball.dy },
+    paddle: { x: paddle.x }
+  };
+  localStorage.setItem(STORAGE_SAVE, JSON.stringify(state));
+  savedGame = state;
+  continueBtn.style.display = 'inline-block';
+}
+
+function pauseAndShowMenu() {
+  saveCurrentState();
+  menu.style.display = 'block';
+  scoreDisplay.style.display = 'none';
+  isPaused = true;
+}
+
+function resumeGame() {
+  if (!savedGame) return;
+  hits = savedGame.hits;
+  speedLevel = savedGame.speedLevel;
+  ball.x = savedGame.ball.x;
+  ball.y = savedGame.ball.y;
+  ball.dx = savedGame.ball.dx;
+  ball.dy = savedGame.ball.dy;
+  paddle.x = savedGame.paddle.x;
+  updateScore();
+
+  menu.style.display = 'none';
+  gameOver.style.display = 'none';
+  scoreDisplay.style.display = 'block';
+  isPaused = false;
+}
+
+function newGame() {
+  localStorage.removeItem(STORAGE_SAVE);
+  savedGame = null;
+  continueBtn.style.display = 'none';
+
+  hits = 0;
+  speedLevel = 1;
+  ball = {
+    x: canvas.clientWidth / 2,
+    y: 100,
+    dx: INITIAL_SPEED * (Math.random() > 0.5 ? 1 : -1),
+    dy: INITIAL_SPEED,
+    radius: BALL_RADIUS
+  };
+  paddle.x = canvas.clientWidth / 2 - paddle.width / 2;
+  updateScore();
+
+  menu.style.display = 'none';
+  gameOver.style.display = 'none';
+  scoreDisplay.style.display = 'block';
+  isPaused = false;
+  hasActiveGame = true;
+}
+
+function gameLoop() {
+  if (!isPaused && hasActiveGame) {
+    updateBall();
+    draw();
+  }
+  requestAnimationFrame(gameLoop);
+}
+
+menu.style.display = 'block';   // start on menu
+gameLoop();
+</script>
+</body>
+</html>

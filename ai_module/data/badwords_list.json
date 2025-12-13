@@ -1,0 +1,36 @@
+{
+  "insultes_francais": [
+    "con", "idiot", "imbecile", "merde", "pute", "salope",
+    "encule", "enculé", "batard", "bâtard", "fuck", "shit", "asshole",
+    "débile", "débiles", "crêtin", "crétins", "abruti", "abrutis",
+    "salaud", "pourri", "pourrie", "nul", "nulle", "nuls", "nulles",
+    "pourrave", "connard", "connards", "enfoiré", "enfoirés",
+    "fumier", "fumiers", "ordure", "ordures", "raclure",
+    "crétin", "stupide", "imbécile", "imbéciles", "con",
+    "encul", "salopes", "putain", "putains", "putes",
+    "chatte", "chattes", "bite", "bites", "couille", "couilles",
+    "cul", "culs", "fout", "foutre", "foutu", "foutus"
+  ],
+  "insultes_dialecte_tunisien": [
+    "haram", "ayeb", "khanya", "mlih", "skhif", "khayba",
+    "naaas", "qahba", "qahmak", "khunya", "jah", "wajh",
+    "aqal", "kmit", "sakif", "taraf", "mabrouk", "malook",
+    "ghbi", "ghbiyya", "saouari", "shkoun", "dhia",
+    "khed", "khadem", "radjel", "sit", "mara"
+  ],
+  "insultes_arabe": [
+    "حقير", "أحمق", "غبي", "وقح", "وضيع", "قذر",
+    "شرير", "خسيس", "دنيء", "ردئ", "سوقة", "وغد",
+    "كافر", "فاسق", "ظالم", "غاشم", "عاهر", "زاني",
+    "ابن الكلب", "ابن القحبة", "حمار", "حمير",
+    "جاهل", "أرعن", "ثقيل", "بغيض", "جحش"
+  ],
+  "spam_patterns": [
+    "viagra", "cialis", "casino", "gratuit", "cliquez ici",
+    "promo", "chance", "gagner", "argent facile", "crypto",
+    "bitcoin", "ethereum", "lottery", "winner", "free money",
+    "click here", "buy now", "limited offer", "act now",
+    "call now", "visit now", "order now", "get rich",
+    "easy cash", "work from home", "make money fast"
+  ]
+}

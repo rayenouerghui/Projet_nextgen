@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Number Memory</title>
+<style>
+  body{margin:0;height:100vh;background:linear-gradient(135deg,#1a0033,#2d1b69);font-family:Segoe UI;color:#fff;display:flex;justify-content:center;align-items:center;overflow:hidden}
+  #game-container{position:relative;width:600px;height:600px}
+  canvas{border-radius:20px;box-shadow:0 20px 50px rgba(0,0,0,.7);background:#000}
+  #menu{position:absolute;inset:0;background:rgba(0,0,0,.94);display:flex;flex-direction:column;justify-content:center;align-items:center;gap:40px;border-radius:20px}
+  #menu h1{font-size:5.5rem;font-weight:900;margin:0;background:linear-gradient(90deg,#ff9a9e,#fad0c4);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  #menu h2{font-size:7rem;font-weight:900;margin:0;background:linear-gradient(90deg,#ff6b9d,#ff8e53);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  button{padding:18px 70px;font-size:2rem;font-weight:bold;background:#ff4757;color:#fff;border:none;border-radius:50px;cursor:pointer;box-shadow:0 15px 35px rgba(255,71,87,.6);transition:.3s}
+  button:hover{transform:scale(1.1);background:#ff3742}
+  #info{position:absolute;top:20px;left:30px;right:30px;display:flex;justify-content:space-between;font-size:1.6rem;font-weight:bold;z-index:10}
+</style>
+</head>
+<body>
+
+<div id="game-container">
+  <canvas id="game" width="600" height="600"></canvas>
+
+  <div id="info">
+    <div>Score: <span id="score">0</span></div>
+    <div>High Score: <span id="high-score">0</span></div>
+  </div>
+
+  <div id="menu">
+    <div>
+      <h1>NUMBER</h1>
+      <h2>MEMORY</h2>
+    </div>
+    <button id="start-game">NEW GAME</button>
+    <button id="continue-game" style="display:none">CONTINUE</button>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+const menu = document.getElementById("menu");
+const startBtn = document.getElementById("start-game");
+const continueBtn = document.getElementById("continue-game");
+const scoreEl = document.getElementById("score");
+const highScoreEl = document.getElementById("high-score");
+
+let level = 1, score = 0, currentNumber = "", input = "", timer;
+let highScore = parseInt(localStorage.getItem("memoryHighScore") || "0");
+let gamePhase = "menu";
+
+highScoreEl.textContent = highScore;
+
+function generateNumber() {
+  return Array.from({length:level},()=>Math.floor(Math.random()*10)).join("");
+}
+
+function getFontSize() {
+  if (level <= 4) return "140px Arial";
+  if (level <= 6) return "120px Arial";
+  if (level <= 8) return "100px Arial";
+  return "85px Arial";
+}
+
+function showNumber() {
+  gamePhase = "showing";
+  currentNumber = generateNumber();
+  let countdown = 4;
+
+  const draw = () => {
+    ctx.clearRect(0,0,600,600);
+    ctx.fillStyle = "#ffffff";
+    ctx.font = getFontSize();
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(currentNumber, 300, 300);
+
+    const cx = 520, cy = 520, radius = 40;
+    ctx.fillStyle = "rgba(255,255,255,0.15)";
+    ctx.beginPath(); ctx.arc(cx, cy, radius, 0, Math.PI*2); ctx.fill();
+    ctx.strokeStyle = "rgba(255,255,255,0.3)"; ctx.lineWidth = 4; ctx.stroke();
+
+    ctx.fillStyle = "#ff3366";
+    ctx.font = "bold 60px Arial";
+    ctx.fillText(countdown, cx, cy);
+  };
+
+  draw();
+
+  timer = setInterval(() => {
+    countdown--;
+    if (countdown < 1) {
+      clearInterval(timer);
+      gamePhase = "input";
+      input = "";
+      drawInput();
+    } else draw();
+  }, 1000);
+}
+
+function drawInput() {
+  ctx.clearRect(0,0,600,600);
+  const txt = input.padEnd(currentNumber.length, "_");
+  ctx.fillStyle = "#00ff88";
+  ctx.font = getFontSize();
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(txt,300,300);
+  ctx.fillStyle = "#ccc";
+  ctx.font = "28px Arial";
+  ctx.fillText("Type the number → Enter",300,430);
+}
+
+function showCorrect() {
+  gamePhase = "transition";
+  score = (level-1)*50;
+  scoreEl.textContent = score;
+  level++;
+
+  ctx.clearRect(0,0,600,600);
+  ctx.fillStyle = "#00ff88";
+  ctx.font = "bold 100px Arial";
+  ctx.textAlign = "center";
+  ctx.fillText("CORRECT!",300,280);
+  ctx.font = "60px Arial";
+  ctx.fillText(`Level ${level}`,300,360);
+  setTimeout(showNumber,1800);
+}
+
+function gameOver(win = false) {
+  ctx.clearRect(0,0,600,600);
+  ctx.fillStyle = win ? "#00ff88" : "#ff3366";
+  ctx.font = "bold 90px Arial";
+  ctx.textAlign = "center";
+  ctx.fillText(win ? "GENIUS! 99%" : "WRONG!",300,300);
+
+  if (score > highScore) {
+    highScore = score;
+    localStorage.setItem("memoryHighScore", highScore);
+    highScoreEl.textContent = highScore;
+  }
+
+  setTimeout(()=>{
+    menu.style.display = "flex";
+    continueBtn.style.display = "none";
+  }, win ? 4000 : 2000);
+}
+
+function startNewGame() {
+  level = 1;
+  score = 0;
+  scoreEl.textContent = "0";
+  menu.style.display = "none";
+  showNumber();
+}
+
+// THIS LINE MAKES NEW GAME WORK — DO NOT DELETE
+startBtn.addEventListener("click", startNewGame);
+
+window.addEventListener("keydown", e => {
+  if (gamePhase === "input") {
+    if (e.key >= "0" && e.key <= "9" && input.length < currentNumber.length) {
+      input += e.key;
+      drawInput();
+    }
+    else if (e.key === "Enter") {
+      // 69 CHEAT: type anything with "69" + press Enter → instant win (level 2+)
+      if (level >= 2 && input.includes("69")) {
+        level === 10 ? gameOver(true) : showCorrect();
+        return;
+      }
+
+      // Normal check
+      if (input.length === currentNumber.length) {
+        if (input === currentNumber) {
+          level === 10 ? gameOver(true) : showCorrect();
+        } else gameOver(false);
+      }
+    }
+    else if (e.key === "Backspace") {
+      input = input.slice(0,-1);
+      drawInput();
+    }
+  }
+
+  if (e.key === "Escape" && (gamePhase === "showing" || gamePhase === "input")) {
+    clearInterval(timer);
+    menu.style.display = "flex";
+    continueBtn.style.display = "block";
+    continueBtn.onclick = () => {
+      menu.style.display = "none";
+      showNumber();
+    };
+  }
+});
+</script>
+</body>
+</html>

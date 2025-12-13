@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Memory Grid</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      user-select: none;
+    }
+    #levelDisplay {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+    #menu, #gameOver, #pauseMenu {
+      text-align: center;
+      display: none;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 10px;
+      font-size: 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    #grid {
+      width: 300px;
+      height: 300px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      gap: 5px;
+      display: none;
+    }
+    .cell {
+      background: #444;
+      border-radius: 6px;
+      transition: 0.2s;
+    }
+    .flash { background: #fff !important; }
+    .error { background: red !important; }
+  </style>
+</head>
+<body>
+
+<div id="levelDisplay">Level: 1</div>
+<div id="menu">
+  <h1>Memory Grid</h1>
+  <button onclick="startGame()">New Game</button><br>
+  <button onclick="showHighScore()">High Score</button>
+  <p id="highScoreDisplay"></p>
+</div>
+
+<div id="pauseMenu">
+  <h1>Paused</h1>
+  <button onclick="continueGame()">Continue</button><br>
+  <button onclick="startGame()">New Game</button>
+</div>
+
+<div id="gameOver">
+  <h1>Game Over</h1>
+  <p id="goLevel"></p>
+  <button onclick="startGame()">New Game</button><br>
+  <button onclick="returnToMenu()">Menu</button>
+</div>
+
+<div id="grid"></div>
+
+<script>
+let sequence = [];
+let playerIndex = 0;
+let level = 1;
+let playing = false;
+let paused = false;
+
+const grid = document.getElementById("grid");
+const menu = document.getElementById("menu");
+const pauseMenu = document.getElementById("pauseMenu");
+const gameOver = document.getElementById("gameOver");
+const goLevel = document.getElementById("goLevel");
+const highScoreDisplay = document.getElementById("highScoreDisplay");
+const levelDisplay = document.getElementById("levelDisplay");
+
+// Build 9 cells
+grid.innerHTML = "";
+for (let i = 0; i < 9; i++) {
+  const c = document.createElement("div");
+  c.className = "cell";
+  c.dataset.index = i;
+  c.onclick = () => handleClick(i);
+  grid.appendChild(c);
+}
+
+function updateLevelDisplay() {
+  levelDisplay.textContent = "Level: " + level;
+}
+
+function returnToMenu() {
+  hideAll();
+  menu.style.display = "block";
+}
+
+function hideAll() {
+  menu.style.display = "none";
+  grid.style.display = "none";
+  pauseMenu.style.display = "none";
+  gameOver.style.display = "none";
+}
+
+function startGame() {
+  hideAll();
+  level = 1;
+  updateLevelDisplay();
+  sequence = [];
+  playing = true;
+  paused = false;
+  grid.style.display = "grid";
+  nextLevel();
+}
+
+function continueGame() {
+  hideAll();
+  grid.style.display = "grid";
+  paused = false;
+  playing = true;
+  playSequence();
+}
+
+function nextLevel() {
+  updateLevelDisplay();
+  sequence.push(Math.floor(Math.random() * 9));
+  playerIndex = 0;
+  playSequence();
+}
+
+function playSequence() {
+  let i = 0;
+  disableClicks();
+  const interval = setInterval(() => {
+    flash(sequence[i]);
+    i++;
+    if (i >= sequence.length) {
+      clearInterval(interval);
+      setTimeout(enableClicks, 300);
+    }
+  }, 600);
+}
+
+function flash(i) {
+  const cell = grid.children[i];
+  cell.classList.add("flash");
+  setTimeout(() => cell.classList.remove("flash"), 300);
+}
+
+function handleClick(i) {
+  if (!playing || paused) return;
+
+  if (i !== sequence[playerIndex]) {
+    const cell = grid.children[i];
+    cell.classList.add("error");
+    setTimeout(() => cell.classList.remove("error"), 500);
+    return gameOverScreen();
+  }
+
+  flash(i);
+  playerIndex++;
+
+  if (playerIndex === sequence.length) {
+    level++;
+    saveHighScore(level - 1);
+    setTimeout(nextLevel, 600);
+  }
+}
+
+function gameOverScreen() {
+  playing = false;
+  hideAll();
+  goLevel.textContent = "You reached level " + (level - 1);
+  gameOver.style.display = "block";
+}
+
+function disableClicks() {
+  grid.style.pointerEvents = "none";
+}
+function enableClicks() {
+  grid.style.pointerEvents = "auto";
+}
+
+function showHighScore() {
+  const hs = localStorage.getItem("memoryHS") || 0;
+  highScoreDisplay.textContent = "High Score: Level " + hs;
+}
+
+function saveHighScore(lv) {
+  const hs = localStorage.getItem("memoryHS") || 0;
+  if (lv > hs) localStorage.setItem("memoryHS", lv);
+}
+
+// ESC behavior
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") {
+    if (playing && !paused) {
+      paused = true;
+      playing = false;
+      hideAll();
+      pauseMenu.style.display = "block";
+    } else if (paused) {
+      continueGame();
+    }
+  }
+});
+
+// Start in menu
+menu.style.display = "block";
+</script>
+</body>
+</html>

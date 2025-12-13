@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Test de QI - Version Française</title>
+<style>
+  body { margin:0; font-family:Arial; background:#0a0a1a; color:#0ff; text-align:center; padding:20px; }
+  h1 { font-size:50px; text-shadow:0 0 20px #0ff; }
+  #intro, #quiz, #result { max-width:900px; margin:0 auto; }
+  button { padding:15px 40px; font-size:22px; background:#0ff; color:#000; border:none; border-radius:10px; cursor:pointer; margin:20px; }
+  button:hover { background:#0cc; }
+  .question { background:rgba(0,255,255,0.1); padding:30px; margin:30px auto; border-radius:15px; border:2px solid #0ff; max-width:800px; }
+  .options { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:30px; }
+  .option { padding:20px; background:rgba(0,255,255,0.15); border:2px solid #0ff; border-radius:12px; cursor:pointer; transition:0.3s; font-size:20px; }
+  .option:hover { background:#0ff; color:#000; }
+  .option.selected { background:#ff0 !important; color:#000; border:4px solid #000; }
+  #timer { font-size:28px; color:#0ff; margin:20px; }
+  #progress { height:12px; background:#333; border-radius:6px; overflow:hidden; margin:20px auto; max-width:600px; }
+  #bar { height:100%; width:0%; background:#0ff; transition:width 0.5s; }
+  #result h1 { font-size:60px; }
+</style>
+</head>
+<body>
+
+<div id="intro">
+  <h1>TEST DE QI</h1>
+  <p>30 questions difficiles • 20 minutes • Mode aveugle</p>
+  <p>Aucune indication avant la fin — comme un vrai test de QI</p>
+  <button onclick="startTest()">COMMENCER LE TEST</button>
+</div>
+
+<div id="quiz" style="display:none">
+  <h1>Test de QI</h1>
+  <div id="timer">Temps : 20:00</div>
+  <div id="progress"><div id="bar"></div></div>
+  <div id="questionContainer"></div>
+  <button onclick="nextQuestion()" id="nextBtn" style="display:none">Suivant</button>
+</div>
+
+<div id="result" style="display:none">
+  <h1>Résultat Final</h1>
+  <div id="finalScore"></div>
+  <button onclick="location.reload()">Recommencer</button>
+</div>
+
+<script>
+const questions = [
+  {q:"Quelle est la suite ?<br>2, 6, 12, 20, 30, ?", options:["42","45","40","48"], a:"42"},
+  {q:"Certains Smarks sont des Blinks. Tous les Blinks sont des Clinks. Donc :", options:["Certains Smarks sont forcément des Clinks","Certains Smarks ne sont pas des Clinks","Tous les Smarks sont des Clinks","On ne peut pas savoir"], a:"Certains Smarks sont forcément des Clinks"},
+  {q:"Lequel est différent ?", options:["Cercle","Carré","Triangle","Rectangle"], a:"Cercle"},
+  {q:"J, F, M, A, M, J, ?", options:["J","A","S","O"], a:"J"},
+  {q:"5 ouvriers construisent 5 murs en 5 jours. Combien de temps pour 1 ouvrier pour 1 mur ?", options:["1 jour","5 jours","25 jours","0,2 jour"], a:"5 jours"},
+  {q:"1, 4, 9, 16, 25, ?", options:["36","49","64","81"], a:"36"},
+  {q:"Premier, Deuxième, Troisième, Quatrième, Cinquième, Sixième, Septième, Huitième — lequel ne va pas ?", options:["Huitième","Deuxième","Troisième","Cinquième"], a:"Huitième"},
+  {q:"Une batte et une balle coûtent 1,10 €. La batte coûte 1 € de plus que la balle. Combien coûte la balle ?", options:["10 centimes","5 centimes","15 centimes","20 centimes"], a:"5 centimes"},
+  {q:"1, 11, 21, 1211, 111221, ?", options:["312211","111321","123211","321112"], a:"312211"},
+  {q:"Marie a deux fois l’âge qu’avait Anne quand Marie avait l’âge d’Anne aujourd’hui. Marie a 40 ans. Quel âge a Anne ?", options:["30","32","36","35"], a:"30"},
+  {q:"16, 25, 36, 49, 64, 81 — l’intrus ?", options:["16","25","36","81"], a:"16"},
+  {q:"Réarrangez CIFAIP :", options:["Océan","Pays","Animal","Ville"], a:"Océan"},
+  {q:"3, 7, 15, 31, 63, ?", options:["127","95","126","128"], a:"127"},
+  {q:"Combien de mois ont 28 jours ?", options:["1","2","Les 12","0"], a:"Les 12"},
+  {q:"Avant-hier j’avais 21 ans. L’an prochain j’en aurai 23. Quand est mon anniversaire ?", options:["31 décembre","1er janvier","30 décembre","2 janvier"], a:"31 décembre"},
+  {q:"Fait le tour du monde en restant dans un coin ?", options:["Timbre","Vent","Soleil","Temps"], a:"Timbre"},
+  {q:"Parle sans bouche, entend sans oreilles ?", options:["Écho","Fantôme","Ombre","Rêve"], a:"Écho"},
+  {q:"Plus on en prend, plus on en laisse ?", options:["Empreintes","Temps","Souvenirs","Dettes"], a:"Empreintes"},
+  {q:"A des touches mais n’ouvre aucune serrure ?", options:["Piano","Carte","Ordinateur","Coffre"], a:"Piano"},
+  {q:"Plus il sèche, plus il mouille ?", options:["Serviette","Éponge","Nuage","Air"], a:"Serviette"},
+  {q:"A une tête et une queue mais pas de corps ?", options:["Pièce","Serpent","Rivière","Allumette"], a:"Pièce"},
+  {q:"Bateau rempli de gens, mais pas une seule personne à bord ?", options:["Tous sont mariés","Ils ont sauté","Bateau jouet","Fantômes"], a:"Tous sont mariés"},
+  {q:"Si je te l’ai, je veux le partager. Si je le partage, je ne l’ai plus ?", options:["Secret","Argent","Nourriture","Amour"], a:"Secret"},
+  {q:"Une fois dans « minute », deux fois dans « moment », jamais dans mille ans ?", options:["La lettre M","Temps","Souffle","Lever de soleil"], a:"La lettre M"},
+  {q:"Des villes sans maisons, des montagnes sans arbres ?", options:["Carte","Globe","Photo","Rêve"], a:"Carte"},
+  {q:"On peut le briser sans le toucher ?", options:["Promesse","Silence","Record","Cœur"], a:"Promesse"},
+  {q:"Un œil mais ne voit rien ?", options:["Aiguille","Cyclope","Pomme de terre","Tempête"], a:"Aiguille"},
+  {q:"Des mains mais ne peut pas applaudir ?", options:["Horloge","Gant","Arbre","Robot"], a:"Horloge"},
+  {q:"Quel bâtiment a le plus d’histoires ?", options:["Bibliothèque","Gratte-ciel","École","Maison"], a:"Bibliothèque"},
+  {q:"Un chapeau jaune tombe dans la mer Rouge, que devient-il ?", options:["Mouillé","Rouge","Bleu","Invisible"], a:"Mouillé"}
+];
+
+let currentQ = 0, answers = [], timeLeft = 20*60, timer;
+
+function startTest() {
+  document.getElementById('intro').style.display = 'none';
+  document.getElementById('quiz').style.display = 'block';
+  showQuestion();
+  timer = setInterval(updateTimer, 1000);
+}
+
+function showQuestion() {
+  const q = questions[currentQ];
+  const shuffled = shuffle([...q.options]);
+
+  document.getElementById('questionContainer').innerHTML = `
+    <div class="question">
+      <h2>Question ${currentQ+1}/30</h2>
+      <p style="font-size:24px; line-height:1.6;">${q.q}</p>
+      <div class="options">
+        ${shuffled.map((opt, i) => `
+          <div class="option" onclick="selectAnswer('${opt}', this)">
+            ${opt}
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+  document.getElementById('nextBtn').style.display = answers[currentQ] ? 'block' : 'none';
+  updateProgress();
+}
+
+function selectAnswer(answer, el) {
+  answers[currentQ] = answer;
+  [...document.querySelectorAll('.option')].forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('nextBtn').style.display = 'block';
+}
+
+function nextQuestion() {
+  currentQ++;
+  if (currentQ < questions.length) showQuestion();
+  else endTest();
+}
+
+function updateTimer() {
+  timeLeft--;
+  const m = String(Math.floor(timeLeft/60)).padStart(2,'0');
+  const s = String(timeLeft%60).padStart(2,'0');
+  document.getElementById('timer').textContent = `Temps : ${m}:${s}`;
+  if (timeLeft <= 0) endTest();
+}
+
+function updateProgress() {
+  document.getElementById('bar').style.width = (currentQ / questions.length * 100) + '%';
+}
+
+function endTest() {
+  clearInterval(timer);
+  document.getElementById('quiz').style.display = 'none';
+  document.getElementById('result').style.display = 'block';
+
+  let correct = 0;
+  answers.forEach((ans, i) => {
+    if (ans === questions[i].a) correct++;
+  });
+
+  const iq = Math.round(70 + correct * 3.3);
+  const rank = correct >= 28 ? "Génie (Top 1%)" :
+               correct >= 25 ? "Très supérieur" :
+               correct >= 22 ? "Supérieur" :
+               correct >= 18 ? "Moyenne haute" : "Moyenne ou moins";
+
+  document.getElementById('finalScore').innerHTML = `
+    <h2>Vous avez ${correct}/30</h2>
+    <h1>QI estimé : ${iq}</h1>
+    <h3>${rank}</h3>
+  `;
+}
+
+function shuffle(a) {
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+</script>
+</body>
+</html>
