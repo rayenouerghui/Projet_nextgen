@@ -55,6 +55,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
 
+  <!-- NextGen Design System -->
+  <link rel="stylesheet" href="../css/nextgen-design-system.css">
+
   <link rel="stylesheet" href="connexion.css">
   
   <style>
@@ -145,14 +148,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
   </div>
 
+  <!-- NextGen Components -->
+  <script src="../js/nextgen-components.js"></script>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="connexion.js"></script>
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      document.querySelectorAll('.toast').forEach(toast => {
-        new bootstrap.Toast(toast, { delay: 4000 }).show();
-      });
+      // Use NextGen toast system
+      <?php if ($success): ?>
+        toast.success('Succès', '<?= addslashes($success) ?>');
+      <?php endif; ?>
+      
+      <?php if ($error): ?>
+        toast.error('Erreur', '<?= addslashes($error) ?>');
+      <?php endif; ?>
+      
+      // Initialize form validation
+      new FormValidator('loginForm');
     });
   </script>
 </body>

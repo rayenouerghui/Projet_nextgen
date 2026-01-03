@@ -1,0 +1,330 @@
+/**
+ * NextGen Design System - Form Components
+ * Inputs, validation states, and form groups
+ */
+
+/* ========================================
+   BASE INPUT
+   ======================================== */
+.input {
+  width: 100%;
+  height: 48px;
+  padding: 0 var(--space-4);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  color: var(--color-text-primary);
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-md);
+  transition: all var(--duration-normal) var(--ease-out);
+}
+
+.input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--color-primary-500);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* ========================================
+   TEXTAREA
+   ======================================== */
+.textarea {
+  min-height: 120px;
+  padding: var(--space-4);
+  resize: vertical;
+  line-height: var(--leading-relaxed);
+}
+
+/* ========================================
+   SELECT DROPDOWN
+   ======================================== */
+.select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23a78bfa' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var(--space-4) center;
+  padding-right: var(--space-12);
+  cursor: pointer;
+}
+
+/* ========================================
+   VALIDATION STATES
+   ======================================== */
+
+/* Error State */
+.input.error {
+  border-color: var(--color-danger-500);
+  animation: shake var(--duration-normal) var(--ease-in-out);
+}
+
+.input.error:focus {
+  border-color: var(--color-danger-500);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-8px); }
+  75% { transform: translateX(8px); }
+}
+
+/* Success State */
+.input.success {
+  border-color: var(--color-success-500);
+}
+
+.input.success:focus {
+  border-color: var(--color-success-500);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+/* Disabled State */
+.input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* ========================================
+   FORM GROUP
+   ======================================== */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
+}
+
+.form-label {
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--color-text-secondary);
+}
+
+.form-label.required::after {
+  content: ' *';
+  color: var(--color-danger-500);
+}
+
+.form-helper {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.form-error {
+  font-size: var(--text-sm);
+  color: var(--color-danger-500);
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.form-success {
+  font-size: var(--text-sm);
+  color: var(--color-success-500);
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+/* ========================================
+   CHARACTER COUNTER
+   ======================================== */
+.form-counter {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  text-align: right;
+  margin-top: var(--space-1);
+}
+
+.form-counter.warning {
+  color: var(--color-warning-500);
+}
+
+.form-counter.error {
+  color: var(--color-danger-500);
+}
+
+/* ========================================
+   CHECKBOX & RADIO
+   ======================================== */
+.checkbox,
+.radio {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkbox input[type="checkbox"],
+.radio input[type="radio"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: var(--color-primary-500);
+}
+
+.checkbox-label,
+.radio-label {
+  font-size: var(--text-base);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+
+/* ========================================
+   FILE UPLOAD
+   ======================================== */
+.file-upload {
+  position: relative;
+  display: inline-block;
+}
+
+.file-upload input[type="file"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.file-upload-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 48px;
+  padding: 0 var(--space-8);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
+  color: var(--color-primary-300);
+  background: transparent;
+  border: 2px solid var(--color-primary-500);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all var(--duration-normal) var(--ease-out);
+}
+
+.file-upload-label:hover {
+  background: rgba(139, 92, 246, 0.1);
+  border-color: var(--color-primary-300);
+  transform: translateY(-2px);
+}
+
+.file-upload-progress {
+  margin-top: var(--space-3);
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-primary-500), var(--color-secondary-500));
+  border-radius: var(--radius-full);
+  transition: width var(--duration-normal) var(--ease-out);
+}
+
+.progress-text {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  margin-top: var(--space-1);
+  text-align: center;
+}
+
+/* ========================================
+   FORM LAYOUT
+   ======================================== */
+.form-row {
+  display: grid;
+  gap: var(--space-6);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+  .form-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .form-row-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ========================================
+   MULTI-STEP FORM PROGRESS
+   ======================================== */
+.form-steps {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-12);
+  position: relative;
+}
+
+.form-steps::before {
+  content: '';
+  position: absolute;
+  top: 20px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--color-border);
+  z-index: 0;
+}
+
+.form-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  position: relative;
+  z-index: 1;
+}
+
+.form-step-circle {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: 50%;
+  font-weight: var(--font-semibold);
+  color: var(--color-text-muted);
+  transition: all var(--duration-normal) var(--ease-out);
+}
+
+.form-step.active .form-step-circle {
+  background: linear-gradient(135deg, var(--color-primary-500), var(--color-secondary-500));
+  border-color: var(--color-primary-500);
+  color: white;
+  box-shadow: var(--shadow-glow);
+}
+
+.form-step.completed .form-step-circle {
+  background: var(--color-success-500);
+  border-color: var(--color-success-500);
+  color: white;
+}
+
+.form-step-label {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.form-step.active .form-step-label {
+  color: var(--color-text-primary);
+  font-weight: var(--font-semibold);
+}

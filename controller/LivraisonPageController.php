@@ -192,28 +192,37 @@ class LivraisonPageController {
         $trajet = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$trajet) {
-            // Créer nouveau trajet
-            $stmt = $this->db->prepare("
-                INSERT INTO trajets (id_livraison, position_lat, position_lng, statut_realtime)
-                VALUES (?, ?, ?, 'en_route')
-            ");
-            $stmt->execute([$id, 36.8, 10.18]); // Position départ Tunis
-            
-            $stmt = $this->db->prepare("SELECT * FROM trajets WHERE id_livraison = ? LIMIT 1");
-            $stmt->execute([$id]);
-            $trajet = $stmt->fetch(PDO::FETCH_ASSOC);
+            // Créer nouveau trajet with basic columns only
+            try {
+                $stmt = $this->db->prepare("
+                    INSERT INTO trajets (id_livraison, position_lat, position_lng, date_update)
+                    VALUES (?, ?, ?, NOW())
+                ");
+                $stmt->execute([$id, 36.8, 10.18]); // Position départ Tunis
+                
+                $stmt = $this->db->prepare("SELECT * FROM trajets WHERE id_livraison = ? LIMIT 1");
+                $stmt->execute([$id]);
+                $trajet = $stmt->fetch(PDO::FETCH_ASSOC);
+            } catch (PDOException $e) {
+                error_log("Error creating trajet: " . $e->getMessage());
+                return null;
+            }
         }
 
         // Simuler progression
         $liveData = $this->trackingService->simulateProgress($livraison, $trajet);
-        if ($liveData) {
-            $stmt = $this->db->prepare("
-                UPDATE trajets SET position_lat = ?, position_lng = ?, statut_realtime = ?
-                WHERE id_trajet = ?
-            ");
-            $stmt->execute([$liveData['latitude'], $liveData['longitude'], $liveData['statut'] ?? 'en_route', $trajet['id_trajet']]);
-            $trajet['position_lat'] = $liveData['latitude'];
-            $trajet['position_lng'] = $liveData['longitude'];
+        if ($liveData && $trajet) {
+            try {
+                $stmt = $this->db->prepare("
+                    UPDATE trajets SET position_lat = ?, position_lng = ?, date_update = NOW()
+                    WHERE id_trajet = ?
+                ");
+                $stmt->execute([$liveData['latitude'], $liveData['longitude'], $trajet['id_trajet']]);
+                $trajet['position_lat'] = $liveData['latitude'];
+                $trajet['position_lng'] = $liveData['longitude'];
+            } catch (PDOException $e) {
+                error_log("Error updating trajet: " . $e->getMessage());
+            }
         }
 
         return $trajet;

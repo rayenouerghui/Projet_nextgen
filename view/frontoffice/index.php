@@ -19,6 +19,10 @@ $totalUsers  = count($userController->getAllUsers());
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Exo+2:wght@500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  
+  <!-- NextGen Design System -->
+  <link rel="stylesheet" href="../css/nextgen-design-system.css">
+  
   <link rel="stylesheet" href="styles.css">
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
@@ -271,12 +275,6 @@ $totalUsers  = count($userController->getAllUsers());
                   <a href="index.php?show_history=1">
                     <i class="bi bi-clock-history"></i> Historique d'activité
                   </a>
-                  <a href="reclamation.php">
-                    <i class="bi bi-exclamation-triangle"></i> Passer une réclamations
-                  </a>
-                  <a href="mes_reclamations.php">
-                    <i class="fas fa-exclamation-triangle"></i> Mes réclamations
-                  </a>
                   <hr>
                   <a href="../backoffice/logout.php" class="logout-item">
                     <i class="bi bi-box-arrow-right"></i> Déconnexion
@@ -294,28 +292,28 @@ $totalUsers  = count($userController->getAllUsers());
 
 <section class="hero">
   <div class="container" style="position:relative;">
-    <h1>Bienvenue sur NextGen</h1>
-    <p>Jouer pour Espérer</p>
-    <div>
-      <a href="catalogue.php" class="btn btn-primary">Voir le Catalogue</a>
-      <a href="catalogue.php" class="btn btn-secondary">En Savoir Plus</a>
+    <h1 class="page-enter">Bienvenue sur NextGen</h1>
+    <p class="page-enter stagger-1">Jouer pour Espérer</p>
+    <div class="page-enter stagger-2">
+      <a href="catalogue.php" class="btn btn-primary ripple">Voir le Catalogue</a>
+      <a href="catalogue.php" class="btn btn-secondary ripple">En Savoir Plus</a>
     </div>
   </div>
 </section>
 
 <section class="py-32">
-  <h2 class="section-title" data-aos="fade-up">NOTRE IMPACT</h2>
+  <h2 class="section-title neon-text-purple" data-aos="fade-up">NOTRE IMPACT</h2>
   <div class="impact-grid">
-    <div class="impact-card glass" data-aos="zoom-in" data-aos-delay="100">
-      <div class="num"><?= $totalJeux ?>+</div>
+    <div class="impact-card glass glass-card card-hover" data-aos="zoom-in" data-aos-delay="100">
+      <div class="num neon-text-cyan"><?= $totalJeux ?>+</div>
       <div class="label">Jeux Disponibles</div>
     </div>
-    <div class="impact-card glass" data-aos="zoom-in" data-aos-delay="300">
-      <div class="num"><?= $totalUsers ?>+</div>
+    <div class="impact-card glass glass-card card-hover" data-aos="zoom-in" data-aos-delay="300">
+      <div class="num neon-text-cyan"><?= $totalUsers ?>+</div>
       <div class="label">Joueurs Solidaires</div>
     </div>
-    <div class="impact-card glass" data-aos="zoom-in" data-aos-delay="500">
-      <div class="num">127</div>
+    <div class="impact-card glass glass-card card-hover" data-aos="zoom-in" data-aos-delay="500">
+      <div class="num neon-text-cyan">127</div>
       <div class="label">Enfants aidés ce mois-ci</div>
     </div>
   </div>
@@ -347,6 +345,9 @@ $totalUsers  = count($userController->getAllUsers());
   <p>Plateforme de vente de jeux vidéo à vocation solidaire</p>
   <p style="margin-top:40px;opacity:0.7;">© 2025 NextGen. Tous droits réservés.</p>
 </footer>
+
+<!-- NextGen Components -->
+<script src="../js/nextgen-components.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>

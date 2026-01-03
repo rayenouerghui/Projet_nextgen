@@ -89,6 +89,10 @@ $photoPath = !empty($user['photo_profil'])
   <title>Gérer mon profil – NextGen</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  
+  <!-- NextGen Design System -->
+  <link rel="stylesheet" href="../css/nextgen-design-system.css">
+  
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Exo+2:wght@500;700&display=swap" rel="stylesheet">
  <style>

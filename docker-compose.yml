@@ -1,0 +1,76 @@
+# NextGen Gaming Platform - Docker Compose
+# Multi-container setup: PHP App + MySQL Database
+
+version: '3.8'
+
+services:
+  # PHP Application with Apache
+  app:
+    build: .
+    container_name: nextgen-app
+    ports:
+      - "8080:80"
+    volumes:
+      # Mount source code for development (hot reload)
+      - .:/var/www/html
+      # Persist uploaded resources
+      - ./resources:/var/www/html/resources
+    environment:
+      - DB_HOST=db
+      - DB_NAME=nextgen_db
+      - DB_USER=root
+      - DB_PASS=nextgen_secret
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - nextgen-network
+    restart: unless-stopped
+
+  # MySQL Database
+  db:
+    image: mysql:8.0
+    container_name: nextgen-db
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: nextgen_secret
+      MYSQL_DATABASE: nextgen_db
+    volumes:
+      # Persist database data
+      - nextgen-db-data:/var/lib/mysql
+      # Initialize database on first run
+      - ./nextgen_db (6).sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$$MYSQL_ROOT_PASSWORD"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - nextgen-network
+    restart: unless-stopped
+
+  # phpMyAdmin (optional - for database management)
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: nextgen-phpmyadmin
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: nextgen_secret
+    depends_on:
+      - db
+    networks:
+      - nextgen-network
+    restart: unless-stopped
+
+# Named volumes for data persistence
+volumes:
+  nextgen-db-data:
+
+# Custom network for container communication
+networks:
+  nextgen-network:
+    driver: bridge

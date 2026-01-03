@@ -10,7 +10,7 @@ define('CONTROLLERS_PATH', ROOT_PATH . '/controller');
 define('MODELS_PATH', ROOT_PATH . '/models');
 define('SERVICES_PATH', ROOT_PATH . '/services');
 define('VIEWS_PATH', ROOT_PATH . '/view');
-define('WEB_ROOT', '/integration user+produit+ reclamation +laivraison/projet/here');
+define('WEB_ROOT', '/project%20nextgen');
 define('WEB_API', WEB_ROOT . '/view/api');
 
 /**

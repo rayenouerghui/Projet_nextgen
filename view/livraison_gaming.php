@@ -9,6 +9,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Orbitron:wght@700;900&family=Rajdhani:wght@600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     
+    <!-- NextGen Design System -->
+    <link rel="stylesheet" href="css/nextgen-design-system.css">
+    
     <!-- MapLibre GL JS -->
     <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css">
     <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
@@ -131,7 +134,7 @@
     <?php endif; ?>
 
     <!-- SECTION 1: COMMANDES -->
-    <section class="card">
+    <section class="card page-enter stagger-1">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
             <div>
                 <h2 style="margin: 0; color: #00ffc3;">1. Mes Commandes</h2>
@@ -154,7 +157,7 @@
         <?php else: ?>
             <div class="commandes-grid">
                 <?php foreach ($commandes as $commande): ?>
-                    <article class="commande-card">
+                    <article class="commande-card card-hover card-glow">
                         <div style="display: flex; justify-content: space-between;">
                             <div>
                                 <span style="color: #ec4899; font-size: 0.8rem; font-weight: bold;">#<?php echo htmlspecialchars($commande['numero_commande']); ?></span>
@@ -175,7 +178,7 @@
                                 <i class="bi bi-check-circle"></i> Livraison déjà planifiée
                             </button>
                         <?php else: ?>
-                            <button class="btn primary planifier-btn" type="button" style="width: 100%; margin-top: 1rem;"
+                            <button class="btn primary planifier-btn ripple" type="button" style="width: 100%; margin-top: 1rem;"
                                     data-commande="<?php echo (int)$commande['id_jeu']; ?>"
                                     data-commande-label="#<?php echo htmlspecialchars($commande['numero_commande']); ?> - <?php echo htmlspecialchars($commande['nom_jeu'] ?? 'Jeu'); ?>">
                                 <i class="bi bi-truck"></i> Planifier la livraison
@@ -188,7 +191,7 @@
     </section>
 
     <!-- SECTION 2: PLANIFICATION -->
-    <section class="card" id="planifier-section" style="border-color: #ec4899;">
+    <section class="card page-enter stagger-2" id="planifier-section" style="border-color: #ec4899;">
         <form method="post" id="livraisonForm">
             <input type="hidden" name="action" value="creer_livraison">
             <input type="hidden" name="id_commande" id="selectedCommande">
@@ -241,14 +244,14 @@
     </section>
 
     <!-- SECTION 3: SUIVI -->
-    <section class="card">
+    <section class="card page-enter stagger-3">
         <h2 style="color: #00ffc3; margin-bottom: 2rem;">3. Suivi en temps réel</h2>
         
         <?php if (empty($livraisons)): ?>
             <p style="text-align: center; color: #aaa;">Aucune livraison programmée.</p>
         <?php else: ?>
             <?php foreach ($livraisons as $livraison): ?>
-                <article class="livraison-card">
+                <article class="livraison-card card-hover">
                     <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
                         <div>
                             <h3 style="margin: 0;"><?php echo htmlspecialchars($livraison['nom_jeu'] ?? 'Jeu'); ?></h3>
@@ -256,9 +259,39 @@
                                 Commande #<?php echo htmlspecialchars($livraison['numero_commande']); ?>
                             </p>
                         </div>
-                        <span class="badge badge-<?php echo htmlspecialchars($livraison['statut']); ?>">
+                        <span class="badge badge-<?php echo htmlspecialchars($livraison['statut']); ?> badge-animated <?php echo in_array(strtolower($livraison['statut']), ['en_route', 'en_transit']) ? 'badge-pulse' : ''; ?>">
+                            <?php if (in_array(strtolower($livraison['statut']), ['en_route', 'en_transit'])): ?>
+                                <i class="bi bi-truck truck-moving" style="margin-right: 4px;"></i>
+                            <?php endif; ?>
                             <?php echo ucfirst($livraison['statut']); ?>
                         </span>
+                    </div>
+
+                    <!-- DELIVERY PROGRESS BAR -->
+                    <?php 
+                    $statusLower = strtolower($livraison['statut']);
+                    $steps = ['commandee' => 0, 'preparée' => 1, 'emballee' => 1, 'en_route' => 2, 'en_transit' => 2, 'livree' => 3, 'livrée' => 3];
+                    $currentStep = $steps[$statusLower] ?? 0;
+                    $progressWidth = ($currentStep / 3) * 100;
+                    ?>
+                    <div class="delivery-progress">
+                        <div class="progress-fill" style="width: <?php echo $progressWidth; ?>%;"></div>
+                        <div class="step <?php echo $currentStep >= 0 ? ($currentStep > 0 ? 'completed' : 'active') : ''; ?>">
+                            <div class="step-icon"><i class="bi bi-cart-check"></i></div>
+                            <span class="step-label">Commandée</span>
+                        </div>
+                        <div class="step <?php echo $currentStep >= 1 ? ($currentStep > 1 ? 'completed' : 'active') : ''; ?>">
+                            <div class="step-icon"><i class="bi bi-box-seam"></i></div>
+                            <span class="step-label">Préparée</span>
+                        </div>
+                        <div class="step <?php echo $currentStep >= 2 ? ($currentStep > 2 ? 'completed' : 'active') : ''; ?>">
+                            <div class="step-icon"><i class="bi bi-truck"></i></div>
+                            <span class="step-label">En Route</span>
+                        </div>
+                        <div class="step <?php echo $currentStep >= 3 ? 'completed' : ''; ?>">
+                            <div class="step-icon"><i class="bi bi-check-circle"></i></div>
+                            <span class="step-label">Livrée</span>
+                        </div>
                     </div>
 
                     <div style="margin: 1.5rem 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; font-size: 0.9rem;">
@@ -274,10 +307,14 @@
 
                     <?php 
                     $statusLower = strtolower($livraison['statut']);
-                    $isTracking = in_array($statusLower, ['en_route', 'en route', 'en_route', 'livree', 'livrée']);
+                    // Match all possible tracking statuses (database uses en_transit, code uses en_route)
+                    $isTracking = in_array($statusLower, ['en_route', 'en route', 'en_transit', 'livree', 'livrée']);
+                    
+                    // Debug info (remove after testing)
+                    // echo "<!-- DEBUG: Status = {$statusLower}, isTracking = " . ($isTracking ? 'true' : 'false') . ", has_lat = " . (!empty($livraison['position_lat']) ? 'true' : 'false') . " -->";
                     ?>
                     
-                    <?php if ($isTracking && $livraison['position_lat']): ?>
+                    <?php if ($isTracking && !empty($livraison['position_lat'])): ?>
                         <!-- MAP VISIBLE ONLY AFTER ADMIN CONFIRMS -->
                         <div class="trajet-map" id="map-<?php echo (int)$livraison['id_livraison']; ?>"
                              data-lat="<?php echo $livraison['position_lat']; ?>"
@@ -287,11 +324,11 @@
                         </div>
                         <div style="text-align: center; margin-top: 1rem;">
                             <a href="tracking.php?id_livraison=<?php echo (int)$livraison['id_livraison']; ?>" 
-                               class="btn primary" style="font-size: 0.9rem;" target="_blank">
+                               class="btn btn-primary" target="_blank">
                                 <i class="bi bi-arrows-fullscreen"></i> Plein écran
                             </a>
                         </div>
-                    <?php elseif (in_array($statusLower, ['commandee', 'commandée', 'preparee', 'preparée', 'préparée'])): ?>
+                    <?php elseif (in_array($statusLower, ['commandee', 'commandée', 'preparee', 'preparée', 'préparée', 'emballee', 'emballée'])): ?>
                         <!-- MESSAGE WHEN WAITING FOR ADMIN CONFIRMATION -->
                         <div style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(59, 130, 246, 0.2)); 
                                     border: 2px dashed rgba(139, 92, 246, 0.5); 
@@ -312,7 +349,9 @@
                         <form method="post" onsubmit="return confirm('Annuler cette livraison ?');" style="display: inline;">
                             <input type="hidden" name="action" value="supprimer_livraison">
                             <input type="hidden" name="id_livraison" value="<?php echo (int)$livraison['id_livraison']; ?>">
-                            <button class="btn danger" style="font-size: 0.8rem; padding: 0.5rem 1rem;">Annuler</button>
+                            <button class="btn btn-danger btn-sm">
+                                <i class="bi bi-x-circle"></i> Annuler
+                            </button>
                         </form>
                     </div>
                 </article>

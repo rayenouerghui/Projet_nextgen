@@ -60,6 +60,10 @@ usort($filteredJeux, function($a, $b) use ($sortBy, $sortOrder) {
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  
+  <!-- NextGen Design System -->
+  <link rel="stylesheet" href="../css/nextgen-design-system.css">
+  
   <link rel="stylesheet" href="styles.css">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@600;800&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Exo+2:wght@500;700&display=swap" rel="stylesheet">
@@ -780,8 +784,8 @@ usort($filteredJeux, function($a, $b) use ($sortBy, $sortOrder) {
           </div>
 
           <div class="games-grid">
-            <?php foreach ($filteredJeux as $jeu): ?>
-              <div class="game-card">
+            <?php $cardIndex = 0; foreach ($filteredJeux as $jeu): ?>
+              <div class="game-card card-glow page-enter stagger-<?php echo min($cardIndex % 5 + 1, 5); ?>">
                 <div class="media-wrapper">
                   <img src="../../resources/<?= htmlspecialchars($jeu->getSrcImg()) ?>" alt="<?= htmlspecialchars($jeu->getTitre()) ?>" class="game-media img-active">
 
@@ -796,9 +800,9 @@ usort($filteredJeux, function($a, $b) use ($sortBy, $sortOrder) {
                 <h3><?= htmlspecialchars($jeu->getTitre()) ?></h3>
                 <p><?= htmlspecialchars($jeu->nom_categorie ?? '') ?></p>
                 <p class="price" style="color:white !important;"><?= number_format($jeu->getPrix(), 2) ?> TND</p>
-                <a href="catalogue_details.php?id=<?= $jeu->getIdJeu() ?>" class="btn-buy">Détails</a>
+                <a href="catalogue_details.php?id=<?= $jeu->getIdJeu() ?>" class="btn-buy ripple">Détails</a>
               </div>
-            <?php endforeach; ?>
+            <?php $cardIndex++; endforeach; ?>
 
             <?php if (empty($filteredJeux)): ?>
               <p style="color: white; text-align: center; width: 100%; font-size: 1.2rem; padding: 3rem;">

@@ -1,6 +1,7 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
-require_once __DIR__ . '/../controller/TrajetApiController.php';
+require_once __DIR__ . '/../config/paths.php';
+require_once CONTROLLERS_PATH . '/TrajetApiController.php';
 
 $id = isset($_GET['id_livraison']) ? (int)$_GET['id_livraison'] : 0;
 

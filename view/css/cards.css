@@ -1,0 +1,254 @@
+/**
+ * NextGen Design System - Card Components
+ * Card variants, structure, and hover effects
+ */
+
+/* ========================================
+   BASE CARD
+   ======================================== */
+.card {
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, 
+    rgba(62, 37, 255, 0.9), 
+    rgba(59, 7, 100, 0.8)
+  );
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-xl);
+  transition: all var(--duration-slow) var(--ease-out);
+}
+
+/* ========================================
+   CARD VARIANTS
+   ======================================== */
+
+/* Interactive Card - Hover Effects */
+.card-interactive {
+  cursor: pointer;
+}
+
+.card-interactive:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 25px 50px rgba(139, 92, 246, 0.6);
+  border-color: var(--color-border-hover);
+}
+
+/* Elevated Card - Higher Shadow */
+.card-elevated {
+  box-shadow: var(--shadow-2xl);
+  border: none;
+}
+
+/* Glass Card - Backdrop Blur */
+.card-glass {
+  background: rgba(26, 23, 58, 0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+/* Flat Card - Minimal */
+.card-flat {
+  background: var(--color-surface);
+  box-shadow: none;
+}
+
+/* ========================================
+   CARD STRUCTURE
+   ======================================== */
+
+/* Card Image */
+.card-image {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  background: var(--color-neutral-800);
+  display: block;
+}
+
+.card-image-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Video Preview Overlay */
+.card-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity var(--duration-slow) var(--ease-out);
+}
+
+.card-interactive:hover .card-video {
+  opacity: 1;
+}
+
+/* Card Header */
+.card-header {
+  padding: var(--space-4) var(--space-6);
+}
+
+.card-title {
+  font-family: var(--font-heading);
+  font-size: var(--text-xl);
+  font-weight: var(--font-bold);
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.card-subtitle {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  margin: var(--space-1) 0 0 0;
+}
+
+/* Card Body */
+.card-body {
+  padding: 0 var(--space-6) var(--space-6);
+  color: var(--color-text-secondary);
+  flex: 1;
+}
+
+.card-body p:last-child {
+  margin-bottom: 0;
+}
+
+/* Card Footer */
+.card-footer {
+  padding: var(--space-4) var(--space-6);
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+/* ========================================
+   SPECIAL CARD TYPES
+   ======================================== */
+
+/* Game Card */
+.card-game {
+  position: relative;
+}
+
+.card-game-badge {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  padding: var(--space-1) var(--space-3);
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(8px);
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  color: white;
+  z-index: 1;
+}
+
+.card-game-price {
+  font-family: var(--font-heading);
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
+  color: var(--color-primary-300);
+}
+
+/* Stat Card */
+.card-stat {
+  text-align: center;
+  padding: var(--space-8);
+}
+
+.card-stat-value {
+  font-family: var(--font-heading);
+  font-size: var(--text-5xl);
+  font-weight: var(--font-black);
+  background: linear-gradient(135deg, var(--color-primary-300), var(--color-secondary-300));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+}
+
+.card-stat-label {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  margin-top: var(--space-2);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Admin Table Card */
+.card-table {
+  padding: 0;
+}
+
+.card-table .card-header {
+  padding: var(--space-6);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.card-table .card-body {
+  padding: 0;
+  overflow-x: auto;
+}
+
+/* ========================================
+   CARD GRID
+   ======================================== */
+.card-grid {
+  display: grid;
+  gap: var(--space-6);
+  grid-template-columns: repeat(1, 1fr);
+}
+
+/* Responsive Grid */
+@media (min-width: 768px) {
+  .card-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1200px) {
+  .card-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .card-grid-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* ========================================
+   CARD ANIMATIONS
+   ======================================== */
+
+/* Staggered Fade In */
+@keyframes cardFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card-animate {
+  animation: cardFadeIn var(--duration-slow) var(--ease-out) backwards;
+}
+
+.card-animate:nth-child(1) { animation-delay: 0ms; }
+.card-animate:nth-child(2) { animation-delay: 50ms; }
+.card-animate:nth-child(3) { animation-delay: 100ms; }
+.card-animate:nth-child(4) { animation-delay: 150ms; }
+.card-animate:nth-child(5) { animation-delay: 200ms; }
+.card-animate:nth-child(6) { animation-delay: 250ms; }
+.card-animate:nth-child(7) { animation-delay: 300ms; }
+.card-animate:nth-child(8) { animation-delay: 350ms; }

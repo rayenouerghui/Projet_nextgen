@@ -1,0 +1,194 @@
+/**
+ * NextGen Design System - Typography System
+ * Font loading, type scale, and responsive sizing
+ */
+
+/* ========================================
+   FONT LOADING
+   ======================================== */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* ========================================
+   BASE TYPOGRAPHY
+   ======================================== */
+body {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  color: var(--color-text-primary);
+  background: var(--color-background);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ========================================
+   HEADINGS
+   ======================================== */
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+  font-family: var(--font-heading);
+  font-weight: var(--font-bold);
+  line-height: var(--leading-tight);
+  color: var(--color-text-primary);
+  margin: 0 0 var(--space-4) 0;
+}
+
+h1, .h1 {
+  font-size: var(--text-4xl);
+  font-weight: var(--font-black);
+}
+
+h2, .h2 {
+  font-size: var(--text-3xl);
+}
+
+h3, .h3 {
+  font-size: var(--text-2xl);
+}
+
+h4, .h4 {
+  font-size: var(--text-xl);
+}
+
+h5, .h5 {
+  font-size: var(--text-lg);
+}
+
+h6, .h6 {
+  font-size: var(--text-base);
+}
+
+/* ========================================
+   RESPONSIVE HEADINGS
+   ======================================== */
+@media (min-width: 768px) {
+  h1, .h1 {
+    font-size: var(--text-5xl);
+  }
+  
+  h2, .h2 {
+    font-size: var(--text-4xl);
+  }
+}
+
+@media (min-width: 1200px) {
+  h1, .h1 {
+    font-size: var(--text-6xl);
+  }
+}
+
+/* ========================================
+   BODY TEXT
+   ======================================== */
+p {
+  margin: 0 0 var(--space-4) 0;
+  line-height: var(--leading-relaxed);
+}
+
+.text-large {
+  font-size: var(--text-lg);
+}
+
+.text-small {
+  font-size: var(--text-sm);
+}
+
+.text-xs {
+  font-size: var(--text-xs);
+}
+
+/* ========================================
+   TEXT COLORS
+   ======================================== */
+.text-primary {
+  color: var(--color-text-primary);
+}
+
+.text-secondary {
+  color: var(--color-text-secondary);
+}
+
+.text-muted {
+  color: var(--color-text-muted);
+}
+
+.text-success {
+  color: var(--color-success-500);
+}
+
+.text-warning {
+  color: var(--color-warning-500);
+}
+
+.text-danger {
+  color: var(--color-danger-500);
+}
+
+/* ========================================
+   TEXT UTILITIES
+   ======================================== */
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.font-normal {
+  font-weight: var(--font-normal);
+}
+
+.font-medium {
+  font-weight: var(--font-medium);
+}
+
+.font-semibold {
+  font-weight: var(--font-semibold);
+}
+
+.font-bold {
+  font-weight: var(--font-bold);
+}
+
+.uppercase {
+  text-transform: uppercase;
+}
+
+.capitalize {
+  text-transform: capitalize;
+}
+
+/* ========================================
+   GRADIENT TEXT
+   ======================================== */
+.text-gradient {
+  background: linear-gradient(135deg, var(--color-primary-500), var(--color-secondary-500));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ========================================
+   LINKS
+   ======================================== */
+a {
+  color: var(--color-primary-300);
+  text-decoration: none;
+  transition: color var(--duration-normal) var(--ease-out);
+}
+
+a:hover {
+  color: var(--color-primary-500);
+}
+
+a:focus {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 2px;
+  border-radius: 2px;
+}

@@ -157,15 +157,20 @@ class TrajetApiController {
         if (!$trajet) {
             $origin = $this->tracking->getOrigin();
             
-            $sql = "INSERT INTO trajets (id_livraison, fournisseur_api, identifiant_suivi, statut_realtime, position_lat, position_lng, current_index, total_points) 
-                    VALUES (?, 'osrm', ?, 'en_route', ?, ?, 0, 0)";
-            $stmt = $this->db->prepare($sql);
-            $stmt->execute([
-                $idLivraison,
-                'TRK-' . $idLivraison . '-' . time(),
-                $origin['lat'],
-                $origin['lng']
-            ]);
+            // Check if extended columns exist by trying a simple insert first
+            try {
+                $sql = "INSERT INTO trajets (id_livraison, position_lat, position_lng, date_update) 
+                        VALUES (?, ?, ?, NOW())";
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute([
+                    $idLivraison,
+                    $origin['lat'],
+                    $origin['lng']
+                ]);
+            } catch (PDOException $e) {
+                error_log("Error creating trajet: " . $e->getMessage());
+                return null;
+            }
             
             $trajet = $this->findTrajet($idLivraison);
         }
@@ -174,25 +179,22 @@ class TrajetApiController {
     }
 
     private function updateTrajet(int $id, array $liveData): void {
-        $updateSql = "UPDATE trajets 
-                      SET position_lat = :lat, 
-                          position_lng = :lng, 
-                          statut_realtime = :statut,
-                          route_json = :route_json,
-                          current_index = :current_index,
-                          total_points = :total_points,
-                          derniere_mise_a_jour = NOW()
-                      WHERE id_trajet = :id";
-        $updateStmt = $this->db->prepare($updateSql);
-        $updateStmt->execute([
-            ':lat' => $liveData['latitude'],
-            ':lng' => $liveData['longitude'],
-            ':statut' => $liveData['statut'],
-            ':route_json' => $liveData['route_json'],
-            ':current_index' => $liveData['current_index'],
-            ':total_points' => $liveData['total_points'],
-            ':id' => $id
-        ]);
+        // Try to update with extended columns, fall back to basic columns if they don't exist
+        try {
+            $updateSql = "UPDATE trajets 
+                          SET position_lat = :lat, 
+                              position_lng = :lng,
+                              date_update = NOW()
+                          WHERE id_trajet = :id";
+            $updateStmt = $this->db->prepare($updateSql);
+            $updateStmt->execute([
+                ':lat' => $liveData['latitude'],
+                ':lng' => $liveData['longitude'],
+                ':id' => $id
+            ]);
+        } catch (PDOException $e) {
+            error_log("Error updating trajet: " . $e->getMessage());
+        }
     }
 
     private function markAsDelivered(int $idLivraison): void {

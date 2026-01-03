@@ -9,7 +9,8 @@ require_once CONFIG_PATH . '/config.php';
 
 class LivraisonAdminController {
     private $pdo;
-    private $statuts = ['commandee', 'preparée', 'en_route', 'livree', 'annulée'];
+    // Match database enum values: 'commandee','emballee','en_transit','livree' + extended: 'preparée','en_route','annulée'
+    private $statuts = ['commandee', 'preparée', 'emballee', 'en_transit', 'en_route', 'livree', 'annulée'];
     
     // Origin point (warehouse/store location)
     private $origin = [
@@ -273,25 +274,23 @@ class LivraisonAdminController {
                 $livraison['position_lat'], $livraison['position_lng']
             );
 
-            $routeJson = $route ? json_encode($route['coordinates']) : null;
-            $totalPoints = $route ? count($route['coordinates']) : 0;
-
-            $sql = "INSERT INTO trajets (id_livraison, fournisseur_api, identifiant_suivi, statut_realtime, 
-                    position_lat, position_lng, route_json, current_index, total_points, derniere_mise_a_jour) 
-                    VALUES (?, 'osrm', ?, 'en_route', ?, ?, ?, 0, ?, NOW())";
+            // Insert trajet with only the columns that exist in the database
+            $sql = "INSERT INTO trajets (id_livraison, position_lat, position_lng, date_update) 
+                    VALUES (?, ?, ?, NOW())";
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute([
                 $id,
-                'TRK-' . $id . '-' . time(),
                 $this->origin['lat'],
-                $this->origin['lng'],
-                $routeJson,
-                $totalPoints
+                $this->origin['lng']
             ]);
         } else {
-            // Update existing trajet
-            $stmt = $this->pdo->prepare("UPDATE trajets SET statut_realtime = 'en_route', derniere_mise_a_jour = NOW() WHERE id_trajet = ?");
-            $stmt->execute([$trajet['id_trajet']]);
+            // Update existing trajet - only update columns that exist
+            $stmt = $this->pdo->prepare("UPDATE trajets SET position_lat = ?, position_lng = ?, date_update = NOW() WHERE id_trajet = ?");
+            $stmt->execute([
+                $this->origin['lat'],
+                $this->origin['lng'],
+                $trajet['id_trajet']
+            ]);
         }
 
         return ['🚚 Livraison confirmée et suivi GPS activé!', 'success'];

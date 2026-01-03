@@ -8,6 +8,8 @@
 $iconMap = [
     'commandee' => 'fa-file-alt',
     'preparée' => 'fa-box',
+    'emballee' => 'fa-box',
+    'en_transit' => 'fa-truck',
     'en_route' => 'fa-truck',
     'livree' => 'fa-check-circle',
     'annulée' => 'fa-times-circle'
@@ -15,6 +17,8 @@ $iconMap = [
 $colorMap = [
     'commandee' => 'gray',
     'preparée' => 'cyan',
+    'emballee' => 'cyan',
+    'en_transit' => 'purple',
     'en_route' => 'purple',
     'livree' => 'green',
     'annulée' => 'red'
@@ -81,10 +85,7 @@ $colorMap = [
       <a href="admin_historique.php" class="flex items-center space-x-4 px-4 py-3 rounded-lg transition hover:bg-white/10 text-purple-300">
         <i class="fas fa-history w-8 text-xl"></i><span x-show="sidebarOpen">Historique</span>
       </a>
-      <a href="admin_reclamations.php" class="flex items-center space-x-4 px-4 py-3 rounded-lg transition hover:bg-white/10 text-purple-300">
-        <i class="fas fa-exclamation-triangle w-8 text-xl"></i><span x-show="sidebarOpen">Réclamations</span>
-      </a>
-      <a href="admin_livraisons.php" class="flex items-center space-x-4 px-4 py-3 rounded-lg bg-gradient-to-r from-orange-600 to-amber-600 text-white font-bold">
+<a href="admin_livraisons.php" class="flex items-center space-x-4 px-4 py-3 rounded-lg bg-gradient-to-r from-orange-600 to-amber-600 text-white font-bold">
         <i class="fas fa-truck w-8 text-xl"></i>
         <span x-show="sidebarOpen">Livraisons</span>
         <?php if ($totalLivraisons > 0): ?>
@@ -250,8 +251,8 @@ $colorMap = [
                       <?php 
                       // Make status comparison case-insensitive
                       $statusLower = strtolower(trim($l['statut']));
-                      $isConfirmable = in_array($statusLower, ['commandee', 'commandée', 'preparee', 'preparée', 'préparée']);
-                      $isTracking = in_array($statusLower, ['en_route', 'en route', 'enroute', 'livree', 'livrée']);
+                      $isConfirmable = in_array($statusLower, ['commandee', 'commandée', 'preparee', 'preparée', 'préparée', 'emballee', 'emballée']);
+                      $isTracking = in_array($statusLower, ['en_route', 'en route', 'en_transit', 'enroute', 'livree', 'livrée']);
                       ?>
                       
                       <!-- CONFIRMER BUTTON - Confirms and starts real-time delivery -->
