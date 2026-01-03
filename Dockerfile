@@ -9,6 +9,10 @@ RUN docker-php-ext-install pdo pdo_mysql mysqli
 # Enable Apache mod_rewrite for clean URLs
 RUN a2enmod rewrite
 
+# Suppress PHP warnings/deprecation notices in production
+RUN echo "error_reporting = E_ALL & ~E_DEPRECATED & ~E_NOTICE & ~E_WARNING" > /usr/local/etc/php/conf.d/error-reporting.ini \
+    && echo "display_errors = Off" >> /usr/local/etc/php/conf.d/error-reporting.ini
+
 # Set working directory
 WORKDIR /var/www/html
 
