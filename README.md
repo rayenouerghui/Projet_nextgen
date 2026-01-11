@@ -1,62 +1,76 @@
-# 🎮 NextGen Gaming Platform
+<p align="center">
+  <img src="resources/nextgen.png" alt="NextGen Logo" width="200"/>
+</p>
 
-A full-stack gaming e-commerce platform with real-time delivery tracking, built with PHP and containerized with Docker.
+<h1 align="center">🎮 NextGen Gaming Platform</h1>
 
-![PHP](https://img.shields.io/badge/PHP-8.2-777BB4?logo=php&logoColor=white)
-![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?logo=mysql&logoColor=white)
-![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)
-![License](https://img.shields.io/badge/License-MIT-green)
+<p align="center">
+  <strong>A full-stack gaming e-commerce platform with real-time delivery tracking</strong>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/PHP-8.2-777BB4?style=for-the-badge&logo=php&logoColor=white"/>
+  <img src="https://img.shields.io/badge/MySQL-8.0-4479A1?style=for-the-badge&logo=mysql&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white"/>
+  <img src="https://img.shields.io/badge/CI%2FCD-GitHub_Actions-2088FF?style=for-the-badge&logo=github-actions&logoColor=white"/>
+</p>
 
 ---
 
 ## 📸 Screenshots
 
-> Add your screenshots here:
-> - `screenshots/home.png` - Homepage
-> - `screenshots/catalogue.png` - Game catalogue
-> - `screenshots/delivery.png` - Delivery tracking
-> - `screenshots/admin.png` - Admin dashboard
+### 🏠 Homepage
+<img src="screenshots/home.png" alt="Homepage" width="100%"/>
+
+### 🎯 Game Catalogue
+<img src="screenshots/catalogue.png" alt="Game Catalogue" width="100%"/>
+
+### 🚚 Real-Time Delivery Tracking
+<img src="screenshots/delivery.png" alt="Delivery Tracking" width="100%"/>
+
+### �‍d💼 Admin Dashboard
+<img src="screenshots/admin-dashboard.png" alt="Admin Dashboard" width="100%"/>
+
+---
+
+## � DevOAps & Deployment
+
+### Docker Containers Running
+<img src="screenshots/docker-running.png" alt="Docker Running" width="100%"/>
+
+### Deployed on Linux VM (Kali)
+<img src="screenshots/vm-deployment.png" alt="VM Deployment" width="100%"/>
+
+### Database Management (phpMyAdmin)
+<img src="screenshots/database.png" alt="Database" width="100%"/>
 
 ---
 
 ## ✨ Features
 
-### 🛒 E-Commerce
-- Game catalogue with categories
-- User authentication & profiles
-- Purchase history tracking
-- Game library management
-
-### 🚚 Real-Time Delivery
-- Live delivery tracking with map
-- Order status updates
-- Admin delivery management
-- Animated progress indicators
-
-### 👨‍💼 Admin Dashboard
-- User management (CRUD)
-- Game management (CRUD)
-- Category management
-- Delivery oversight
-
-### 🎨 Modern UI/UX
-- Responsive design
-- Gaming-themed aesthetics
-- Smooth animations
-- Mobile-friendly
+| Feature | Description |
+|---------|-------------|
+| 🛒 **E-Commerce** | Game catalogue, categories, purchase system |
+| 👤 **User System** | Authentication, profiles, game library |
+| 🚚 **Delivery Tracking** | Real-time map tracking with status updates |
+| 👨‍💼 **Admin Panel** | Full CRUD for users, games, categories, deliveries |
+| 🎨 **Modern UI** | Responsive gaming-themed design |
+| 🐳 **Dockerized** | One-command deployment with Docker Compose |
+| 🔄 **CI/CD** | Automated testing and builds with GitHub Actions |
 
 ---
 
-## 🛠️ Tech Stack
+## �️ Tecch Stack
 
-| Layer | Technology |
-|-------|------------|
-| Frontend | HTML5, CSS3, JavaScript |
-| Backend | PHP 8.2 |
-| Database | MySQL 8.0 |
-| Server | Apache |
-| Container | Docker & Docker Compose |
-| CI/CD | GitHub Actions |
+<table>
+<tr>
+<td align="center"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg" width="40"/><br/>PHP 8.2</td>
+<td align="center"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" width="40"/><br/>MySQL</td>
+<td align="center"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" width="40"/><br/>Docker</td>
+<td align="center"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/apache/apache-original.svg" width="40"/><br/>Apache</td>
+<td align="center"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" width="40"/><br/>JavaScript</td>
+</tr>
+</table>
 
 ---
 
@@ -73,15 +87,16 @@ cd Projet_nextgen
 docker-compose up -d
 
 # Access the application
-# App: http://localhost:8080
-# phpMyAdmin: http://localhost:8081
+# 🌐 App:        http://localhost:8080
+# 🗄️ phpMyAdmin: http://localhost:8081
 ```
 
 ### Option 2: XAMPP
 
-1. Clone to `htdocs` folder
+1. Clone to `C:\xampp\htdocs\`
 2. Import `database.sql` into MySQL
-3. Access via `http://localhost/Projet_nextgen`
+3. Start Apache & MySQL
+4. Visit `http://localhost/Projet_nextgen`
 
 ---
 
@@ -89,21 +104,21 @@ docker-compose up -d
 
 ```
 Projet_nextgen/
-├── api/                 # API endpoints
-├── config/              # Database & app configuration
-├── controller/          # PHP controllers (MVC)
-├── models/              # Data models
-├── view/
-│   ├── frontoffice/     # User-facing pages
+├── 📂 api/              # REST API endpoints
+├── 📂 config/           # Database configuration
+├── 📂 controller/       # MVC Controllers
+├── 📂 models/           # Data models
+├── �D view/
+│   ├── frontoffice/     # User pages
 │   ├── backoffice/      # Admin pages
 │   ├── css/             # Stylesheets
 │   └── js/              # JavaScript
-├── games/               # Mini-games collection
-├── resources/           # Uploaded images & media
-├── scripts/             # Deployment scripts
-├── docker-compose.yml   # Docker configuration
-├── Dockerfile           # Container build
-└── database.sql         # Database schema
+├── 📂 games/            # Mini-games collection
+├── 📂 resources/        # Media uploads
+├── 📂 scripts/          # Deployment scripts
+├── 🐳 docker-compose.yml
+├── 🐳 Dockerfile
+└── �️ rdatabase.sql
 ```
 
 ---
@@ -114,39 +129,52 @@ Projet_nextgen/
 |---------|------|-------------|
 | `nextgen-app` | 8080 | PHP Application |
 | `nextgen-db` | 3307 | MySQL Database |
-| `nextgen-phpmyadmin` | 8081 | Database Admin |
+| `nextgen-phpmyadmin` | 8081 | Database Admin UI |
 
 ---
 
-## 📜 Scripts
+## 📜 Deployment Scripts
 
 ```bash
-# Install Docker (Debian/Kali)
-./scripts/install-docker.sh
-
-# Deploy application
-./scripts/deploy.sh
-
-# View logs
-./scripts/logs.sh
-
-# Check status
-./scripts/status.sh
-
-# Stop all containers
-./scripts/stop.sh
+./scripts/install-docker.sh  # Install Docker on Debian/Kali
+./scripts/deploy.sh          # Build and start containers
+./scripts/status.sh          # Check container status
+./scripts/logs.sh            # View application logs
+./scripts/stop.sh            # Stop all containers
 ```
+
+---
+
+## 🔄 CI/CD Pipeline
+
+The project includes a GitHub Actions workflow that:
+
+1. ✅ Runs PHP syntax checks on every push
+2. 🐳 Builds Docker image
+3. 📦 Pushes to Docker Hub (when configured)
+4. 📢 Notifies when deployment is ready
 
 ---
 
 ## 👤 Author
 
-**Rayen Ouerghui**
-
-- GitHub: [@rayenouerghui](https://github.com/rayenouerghui)
+<table>
+<tr>
+<td align="center">
+<strong>Rayen Ouerghui</strong><br/>
+<a href="https://github.com/rayenouerghui">@rayenouerghui</a>
+</td>
+</tr>
+</table>
 
 ---
 
 ## 📄 License
 
 This project is licensed under the MIT License.
+
+---
+
+<p align="center">
+  <strong>⭐ Star this repo if you found it useful!</strong>
+</p>
