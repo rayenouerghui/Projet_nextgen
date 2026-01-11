@@ -40,7 +40,7 @@ services:
       # Persist database data
       - nextgen-db-data:/var/lib/mysql
       # Initialize database on first run
-      - ./nextgen_db (6).sql:/docker-entrypoint-initdb.d/init.sql
+      - ./database.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$$MYSQL_ROOT_PASSWORD"]
       interval: 10s

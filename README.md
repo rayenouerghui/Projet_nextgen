@@ -1,48 +1,49 @@
-# 🎮 NextGen - Gaming E-Commerce Platform
+# 🎮 NextGen Gaming Platform
 
-<div align="center">
+A full-stack gaming e-commerce platform with real-time delivery tracking, built with PHP and containerized with Docker.
 
-![NextGen Logo](resources/nextgen.png)
-
-**A modern gaming e-commerce platform with real-time delivery tracking**
-
-[![PHP](https://img.shields.io/badge/PHP-8.2-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://php.net)
-[![MySQL](https://img.shields.io/badge/MySQL-MariaDB-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://mariadb.org)
-[![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
-[![MapLibre](https://img.shields.io/badge/MapLibre-GL_JS-396CB2?style=for-the-badge)](https://maplibre.org)
-
-</div>
+![PHP](https://img.shields.io/badge/PHP-8.2-777BB4?logo=php&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?logo=mysql&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-green)
 
 ---
 
-## 🚀 Overview
+## 📸 Screenshots
 
-NextGen is a full-stack gaming e-commerce platform that allows users to browse, purchase, and track delivery of games. The platform features a modern gaming-themed UI with real-time GPS tracking for deliveries.
+> Add your screenshots here:
+> - `screenshots/home.png` - Homepage
+> - `screenshots/catalogue.png` - Game catalogue
+> - `screenshots/delivery.png` - Delivery tracking
+> - `screenshots/admin.png` - Admin dashboard
 
-## ✨ Key Features
+---
+
+## ✨ Features
 
 ### 🛒 E-Commerce
-- **Game Catalogue** - Browse games with video previews on hover
-- **Category Filtering** - Filter by category, price range, and search
-- **User Library** - View purchased games
-- **Credits System** - In-platform currency for purchases
+- Game catalogue with categories
+- User authentication & profiles
+- Purchase history tracking
+- Game library management
 
-### 📦 Delivery System
-- **Order Management** - Create and track delivery orders
-- **Real-Time GPS Tracking** - Live map showing delivery progress
-- **Admin Confirmation** - Deliveries start only after admin approval
-- **Progress Visualization** - Step-by-step delivery status bar
+### 🚚 Real-Time Delivery
+- Live delivery tracking with map
+- Order status updates
+- Admin delivery management
+- Animated progress indicators
 
-### 👤 User Management
-- **Authentication** - Secure login/registration
-- **Profile Management** - Update profile and photo
-- **Activity History** - Track all user actions
+### 👨‍💼 Admin Dashboard
+- User management (CRUD)
+- Game management (CRUD)
+- Category management
+- Delivery oversight
 
 ### 🎨 Modern UI/UX
-- **Gaming Theme** - Purple/pink gradient design
-- **Glassmorphism** - Frosted glass card effects
-- **Animations** - Smooth transitions and hover effects
-- **Responsive** - Works on all devices
+- Responsive design
+- Gaming-themed aesthetics
+- Smooth animations
+- Mobile-friendly
 
 ---
 
@@ -50,167 +51,102 @@ NextGen is a full-stack gaming e-commerce platform that allows users to browse, 
 
 | Layer | Technology |
 |-------|------------|
-| **Frontend** | HTML5, CSS3, JavaScript ES6+ |
-| **Backend** | PHP 8.2 (MVC Architecture) |
-| **Database** | MySQL / MariaDB |
-| **Maps** | MapLibre GL JS, Leaflet, OSRM |
-| **Styling** | Custom Design System, Tailwind CSS |
-| **Icons** | Bootstrap Icons, Font Awesome |
+| Frontend | HTML5, CSS3, JavaScript |
+| Backend | PHP 8.2 |
+| Database | MySQL 8.0 |
+| Server | Apache |
+| Container | Docker & Docker Compose |
+| CI/CD | GitHub Actions |
+
+---
+
+## 🚀 Quick Start
+
+### Option 1: Docker (Recommended)
+
+```bash
+# Clone the repository
+git clone https://github.com/rayenouerghui/Projet_nextgen.git
+cd Projet_nextgen
+
+# Start all services
+docker-compose up -d
+
+# Access the application
+# App: http://localhost:8080
+# phpMyAdmin: http://localhost:8081
+```
+
+### Option 2: XAMPP
+
+1. Clone to `htdocs` folder
+2. Import `database.sql` into MySQL
+3. Access via `http://localhost/Projet_nextgen`
 
 ---
 
 ## 📁 Project Structure
 
 ```
-nextgen/
-├── api/                    # REST API endpoints
-├── config/                 # Configuration files
-├── controller/             # MVC Controllers
-├── models/                 # Data models
-├── services/               # Business logic services
+Projet_nextgen/
+├── api/                 # API endpoints
+├── config/              # Database & app configuration
+├── controller/          # PHP controllers (MVC)
+├── models/              # Data models
 ├── view/
-│   ├── frontoffice/       # User-facing pages
-│   ├── backoffice/        # Admin dashboard
-│   ├── css/               # Design system
-│   └── js/                # JavaScript components
-├── games/                  # Playable HTML5 games
-└── resources/              # Images, videos, assets
+│   ├── frontoffice/     # User-facing pages
+│   ├── backoffice/      # Admin pages
+│   ├── css/             # Stylesheets
+│   └── js/              # JavaScript
+├── games/               # Mini-games collection
+├── resources/           # Uploaded images & media
+├── scripts/             # Deployment scripts
+├── docker-compose.yml   # Docker configuration
+├── Dockerfile           # Container build
+└── database.sql         # Database schema
 ```
 
 ---
 
-## 🎯 Core Modules
+## 🐳 Docker Services
 
-### 1. User Module
-- Registration with email verification
-- Secure password hashing
-- Role-based access (User/Admin)
-- Profile customization
-
-### 2. Product Module
-- Game CRUD operations
-- Category management
-- Image/video uploads
-- Price management
-
-### 3. Delivery Module
-- Order creation with map picker
-- Real-time GPS tracking via OSRM
-- Admin delivery confirmation
-- Automated status updates
-- ETA calculations
+| Service | Port | Description |
+|---------|------|-------------|
+| `nextgen-app` | 8080 | PHP Application |
+| `nextgen-db` | 3307 | MySQL Database |
+| `nextgen-phpmyadmin` | 8081 | Database Admin |
 
 ---
 
-## 🗺️ Real-Time Tracking Features
-
-- **Interactive Map** - Click to select delivery destination
-- **Route Visualization** - Shows actual road routes
-- **Live Position Updates** - Truck marker moves in real-time
-- **Progress Stats** - Distance, ETA, completion percentage
-- **Fullscreen Mode** - Immersive tracking experience
-
----
-
-## 🎮 Included Games
-
-- 🐍 Snake
-- ♟️ Chess Master
-- 🎯 Copy Me
-- 🚀 Asteroid Destroyer
-- 🧠 Code Master
-- 🧩 IQ Test
-- 🔢 Memo Number
-- 🏓 Pong
-
----
-
-## 📸 Screenshots
-
-### Homepage
-Modern gaming-themed landing page with animated hero section
-
-### Catalogue
-Game grid with video preview on hover, filtering, and search
-
-### Delivery Tracking
-Real-time GPS map with route visualization and progress bar
-
-### Admin Dashboard
-Complete management panel for users, games, and deliveries
-
----
-
-## 🚀 Getting Started
-
-### Option 1: Docker (Recommended) 🐳
-
-**Prerequisites:** Docker Desktop installed
+## 📜 Scripts
 
 ```bash
-# Clone the repository
-git clone [repository-url] nextgen
-cd nextgen
+# Install Docker (Debian/Kali)
+./scripts/install-docker.sh
 
-# Start all services
-docker-compose up -d
+# Deploy application
+./scripts/deploy.sh
 
-# Wait for MySQL to initialize (first run takes ~30 seconds)
-docker-compose logs -f db
-```
+# View logs
+./scripts/logs.sh
 
-**Access:**
-- 🌐 App: http://localhost:8080/view/frontoffice/index.php
-- 🗄️ phpMyAdmin: http://localhost:8081
+# Check status
+./scripts/status.sh
 
-**Stop services:**
-```bash
-docker-compose down
-```
-
-### Option 2: XAMPP (Traditional)
-
-**Prerequisites:**
-- XAMPP (Apache + MySQL)
-- PHP 8.0+
-
-**Steps:**
-1. Clone to `htdocs`:
-```bash
-cd C:\xampp\htdocs
-git clone [repository-url] nextgen
-```
-
-2. Import database:
-- Open phpMyAdmin (http://localhost/phpmyadmin)
-- Create database `nextgen_db`
-- Import `nextgen_db (6).sql`
-
-3. Start XAMPP:
-- Start Apache
-- Start MySQL
-
-4. Access:
-```
-http://localhost/nextgen/view/frontoffice/index.php
+# Stop all containers
+./scripts/stop.sh
 ```
 
 ---
 
-## 👨‍💻 Author
+## 👤 Author
 
-**Dhia Boulares**
+**Rayen Ouerghui**
+
+- GitHub: [@rayenouerghui](https://github.com/rayenouerghui)
 
 ---
 
 ## 📄 License
 
-This project is for educational purposes.
-
----
-
-<div align="center">
-
-**Built with ❤️ and lots of ☕**
-
-</div>
+This project is licensed under the MIT License.
